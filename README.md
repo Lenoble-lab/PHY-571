@@ -20,4 +20,4 @@ class simulation
 - update_velocity
 - update_position
 
-main : conditions initiales et fait 
+main : conditions initiales et fait avancer le pas de temps
