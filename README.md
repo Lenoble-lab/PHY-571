@@ -2,7 +2,7 @@
 
 # Architecture
 class Particule 
-- position, masse, accel, velocity
+- position, masse, force, velocity
 
 
 class Node 
@@ -13,14 +13,16 @@ class Node
 
 
 class simulation 
-- delta_t, nb_point, size, G, particules[]
+- delta_t, nb_point, size, G, particules[], root
 - init
 - init_gaussian (et plus selon affinites)
-- calculate_accel("cree l'arbre et calcule les accel")
+- set_tree ("met root a jour")
+- calculate_force(calcule force, potentiel)
+- calculate_accel
 - update_velocity
 - update_position
 
 main : conditions initiales et fait avancer le pas de temps
 
 class exploitation
-
+???
