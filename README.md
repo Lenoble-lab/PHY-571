@@ -6,7 +6,7 @@ class Particule
 
 
 class Node 
-- particule, nb_children, box_size, id
+- particule, nb_children, box_size, id, [NW, NE, SW, SE]
 - init
 - create_tree (simul)
 - calculate_centers, calculate_masses
@@ -21,3 +21,6 @@ class simulation
 - update_position
 
 main : conditions initiales et fait avancer le pas de temps
+
+class exploitation
+
