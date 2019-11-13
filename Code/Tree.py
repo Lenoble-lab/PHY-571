@@ -27,6 +27,7 @@ class Node :
     def calculate_mass_COM(self) : #update mass and center of mass, implicit recursive function with create_tree
         mass = 0
         position = np.zeros_like(self.virtual_particule.position)
+<<<<<<< HEAD
         print(position)
         for i in range (len(self.children)):
             if self.children[i] != None:
@@ -34,6 +35,15 @@ class Node :
                 self.children[i].virtual_particule.print_particule()
                 print("calculate mass")
                 print(self.children[i].virtual_particule.mass * self.children[i].virtual_particule.position)
+=======
+        #print(position)
+        for i in range (len(self.children)):
+            if self.children[i] != None:
+                mass += self.children[i].virtual_particule.mass
+                #self.children[i].virtual_particule.print_particule()
+                #print("calculate mass")
+                #print(self.children[i].virtual_particule.mass * self.children[i].virtual_particule.position)
+>>>>>>> 4dc9fc70149e9a52fd31edb97fe1de4dcca3a254
                 position += self.children[i].virtual_particule.mass * self.children[i].virtual_particule.position
 
         self.virtual_particule.mass += mass
@@ -48,7 +58,10 @@ class Tree :
     
     def create_tree (self, particules):
 
+<<<<<<< HEAD
         print("begin create tree")
+=======
+>>>>>>> 4dc9fc70149e9a52fd31edb97fe1de4dcca3a254
         for i in  range (len(particules)):
             particules[i].print_particule()
 
@@ -56,7 +69,11 @@ class Tree :
         if len(particules)==1 :     ##if there is only one particule
             self.current_node = Node (particules[0], self.current_node.box_size/2 , np.array([0,0]))  #we don't care box_center
             print("len particules ==1")
+<<<<<<< HEAD
             self.current_node.virtual_particule.print_particule()
+=======
+            #self.current_node.virtual_particule.print_particule()
+>>>>>>> 4dc9fc70149e9a52fd31edb97fe1de4dcca3a254
         else :
             self.generate_children(particules)          ##function which creates the tree
             self.current_node.calculate_mass_COM()               ## calculates the total mass and the center of mass
