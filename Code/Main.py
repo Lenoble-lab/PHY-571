@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 simul = Simulation (1, 2, 15, np.array([0.,0.]))
 
 simul.particules = [Particule(np.array([-5.,1.]), 1, 0,np.array([0.,0.]),0), 
-                                Particule(np.array([5.,1.]), 1, 0,np.array([0.,0.]),1)]
+                                Particule(np.array([5.,1.]), 2, 0,np.array([0.,0.]),1)]
 
 
 

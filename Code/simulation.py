@@ -30,7 +30,10 @@ class Simulation :
     def calculate_force(self):
         for i in range (self.nb_point):
             self.particules[i].force = np.array([0.,0.]) # re-set the force for the next step
+            print("self.root")
+            self.root.virtual_particule.print_particule()
             self.calculate_force_target(self.particules[i], self.root)
+            
     
     def calculate_force_target(self, target_particule, temp_node):
         particule2 = temp_node.virtual_particule  #particule (or virtual particule) in question
@@ -39,12 +42,14 @@ class Simulation :
         r = np.sqrt(np.sum(vect_r**2))
 
         d = temp_node.box_size
-        print(r, ' r')
+        
+        if target_particule.id == 1 : print(r, ' r')
 
         if r>0:  #if the node has only one particule
             
-            print(d/r, " d/r")
-            print(target_particule.force, 'target part force')
+            if target_particule.id ==1 : 
+                print(d/r, " d/r")
+                print(target_particule.force, 'target part force')
 
             if (temp_node.nb_children == 0) or (d/r <=  self.theta): 
                 
@@ -52,18 +57,27 @@ class Simulation :
                 #or termination condition
 
                 target_particule.force += self.G * particule2.mass * target_particule.mass / r**3 * vect_r
+                
             
             else :  
                 #not favorable case, split the node and repeat
-
+                print("not favorable case")
                 for i in range(4):
                     if temp_node.children[i] != None :
-                        target_particule.force += self.calculate_force_target(target_particule, temp_node.children[i])
+                        """
+                        print("target particule : ")
+                        target_particule.print_particule()
+                        print("noeud enfant")
+                        temp_node.children[i].virtual_particule.print_particule()
+                        print(self.calculate_force_target(target_particule, temp_node.children[i]), " force to add")
+                        """
+                        self.calculate_force_target(target_particule, temp_node.children[i])
+                        
     
 
     def update_velocity (self) :
         for i in range(self.nb_point):
-            self.particules[i].velocity += (-self.particules[i].force/self.particules[i].mass )*self.delta_t   #1st order of integration
+            self.particules[i].velocity += (self.particules[i].force/self.particules[i].mass )*self.delta_t   #1st order of integration
 
 
     def update_position (self):
