@@ -26,8 +26,7 @@ class Simulation :
     def calculate_force(self):
         for i in range (self.nb_point):
             self.particules[i].force = np.array([0.,0.]) # re-set the force for the next step
-            print("self.root")
-            self.root.virtual_particule.print_particule()
+            self.particules[i].potential = 0
             self.calculate_force_target(self.particules[i], self.root)
             
     
@@ -40,21 +39,16 @@ class Simulation :
 
         d = temp_node.box_size
         
-        if target_particule.id == 2 : print(r, ' r')
-
         if r>0:  #if the node has only one particule
             
-            if target_particule.id ==1 : 
-                print(d/r, " d/r")
-                print(target_particule.force, 'target part force')
-
+            
             if (temp_node.nb_children == 0) or (d/r <=  self.theta): 
                 
                 #if the node is far enough then we approximate
                 #or termination condition
 
                 target_particule.force += self.G * particule2.mass * target_particule.mass / r**3 * vect_r
-                
+                target_particule.potential += -self.G * particule2.mass * target_particule.mass / r
             
             else :  
                 #not favorable case, split the node and repeat

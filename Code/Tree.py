@@ -8,6 +8,7 @@ class Particule :
         self.force = force      ## force applied to the particule
         self.velocity = velocity    ## velocity of the particule
         self.id = id            ## number of the particule (-1 if the paticule doesnt really exist)
+        self.potential = 0        #For calculation of total energy
     
     def print_particule(self):
         print("particule")
@@ -39,6 +40,7 @@ class Node :
         mass = 0
         position = np.zeros_like(self.virtual_particule.position)
         
+
         for i in range (len(self.children)):
             if self.children[i] != None:
                 self.children[i].virtual_particule.print_particule()
