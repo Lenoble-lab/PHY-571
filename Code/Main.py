@@ -2,10 +2,10 @@ from Tree import *
 from simulation import *
 import numpy as np
 import matplotlib.pyplot as plt
-
+import scipy.misc
 
     
-simul = Simulation (0.001, 15, np.array([0.,0.]))
+simul = Simulation (0.1, 15, np.array([0.,0.]))
 
 simul.particules = [Particule(np.array([3,3.]), 1, 0,np.array([0.,0.]),0), 
                             Particule(np.array([-3,3.]), 1, 0,np.array([0.,0.]),1),
@@ -29,7 +29,7 @@ def init_terr_soleil(s):
 
 init_terr_soleil(simul)
 N_part = len(simul.particules)
-N_cycle = 4000
+N_cycle = 40
 
 pos_x = [[]]*N_part
 pos_y = [[]]*N_part
@@ -43,8 +43,9 @@ for j in range(N_cycle) :
 
 
     for i in range (N_part):
-        pos_x[i].append(parti[i].position[0])
-        pos_y[i].append(parti[i].position[1])
+        pos_x[i] = pos_x[i] + [parti[i].position[0]]
+        pos_y[i] = pos_y[i] + [parti[i].position[1]]
+
 
     simul.step()
     parti = simul.particules
@@ -53,6 +54,9 @@ for j in range(N_cycle) :
         enery_cin[j] += 1/2 * np.sum(parti[i].velocity**2) * parti[i].mass
         enery_pot[j] += parti[i].potential /2
 
+data = [pos_x, pos_y]
+
+np.save(r'C:\Users\romain Lenoble\Documents\PHY575\Projet\PHY-571\Data\data1', data)
 
 plt.figure()
 plt.subplot(1,2,1)
@@ -66,6 +70,9 @@ plt.plot(enery_pot, label = 'energy potential')
 plt.plot(enery_cin + enery_pot, label = 'energy tot')
 
 plt.legend()
-plt.show()
+plt.savefig('test.jpg')
+plt.savefig(r'C:\Users\romain Lenoble\Documents\PHY575\Projet\PHY-571\Data\test.jpg')
+
+plt.show()  
     
 
