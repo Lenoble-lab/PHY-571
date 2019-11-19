@@ -17,3 +17,5 @@ pdf des liens
 https://www.cpht.polytechnique.fr/nextcloud/index.php/s/R6bCFRZrbgwoZkd?path=%2F09_Many_body#pdfviewer
 https://www.cpht.polytechnique.fr/nextcloud/index.php/s/R6bCFRZrbgwoZkd?path=%2F09_Many_body#pdfviewer
 
+python editeur : 
+[brochet Code]$ /usr/local/anaconda3-5.0.0/bin/python Main.py 
