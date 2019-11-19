@@ -10,15 +10,23 @@ class Simulation :
         self.particules = []        #particules, needs to be update
         self.root = None        #root of the tree
         self.theta = theta          #parameter of the simulation
-    
+        self.eps = 10**(-5)          #qvoid collision
     def step(self):
         self.nb_point = len(self.particules)
         self.set_tree()                 #create the tree with the current state of the particules
-        print("set_tree finish")
+        print("set tree finish")
         self.calculate_force()          #calcul the interaction on each particule
         self.update_velocity()          #update the velocity of each particule
         self.update_position()          #update the position of each particule
 
+        """
+        test= []
+        for i in range (self.nb_point):
+            if np.abs(self.particules[i].position[0]) > self.size or np.abs(self.particules[i].position[1]) > self.size :
+                test = test +[i]
+        for i in range (len(test)):
+            del self.particules[test[i]]
+        """
 
     def set_tree(self):
         self.root = Node(self.size, self.center, self.particules)
@@ -47,21 +55,13 @@ class Simulation :
                 #if the node is far enough then we approximate
                 #or termination condition
 
-                target_particule.force += self.G * particule2.mass * target_particule.mass / r**3 * vect_r
-                target_particule.potential += -self.G * particule2.mass * target_particule.mass / r
+                target_particule.force += self.G * particule2.mass * target_particule.mass / (r**2 + self.eps**2) * vect_r / r
+                target_particule.potential += -self.G * particule2.mass * target_particule.mass / (r + self.eps)
             
             else :  
                 #not favorable case, split the node and repeat
-                print("not favorable case")
                 for i in range(4):
                     if temp_node.children[i] != None :
-                        """
-                        print("target particule : ")
-                        target_particule.print_particule()
-                        print("noeud enfant")
-                        temp_node.children[i].virtual_particule.print_particule()
-                        print(self.calculate_force_target(target_particule, temp_node.children[i]), " force to add")
-                        """
                         self.calculate_force_target(target_particule, temp_node.children[i])
                         
     

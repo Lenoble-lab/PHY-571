@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 
 
 
-data = np.load(r'C:\Users\romain Lenoble\Documents\PHY575\Projet\PHY-571\Data\data1.npy')
+data = np.load("../results/data.npy")
 
 pos_x, pos_y = np.array(data)
 
@@ -21,15 +21,13 @@ fig = plt.figure()
 
 ax = plt.axes(xlim=(-13, 13), ylim=(-13, 13))
 line, = ax.plot([], [], 'o')
-#line2, = ax.plot([], [], lw=3)
 
 def make_frame(t):
     line.set_data(pos_x[:,t], pos_y[:,t])
-    print(pos_x[:,t])
     return line,    
 
 ani = animation.FuncAnimation(fig, make_frame, frames=40, interval=200)
 
-ani.save('dynamic_images.mp4')
+ani.save('dynamic_images_2.mp4')
 
 plt.show()

@@ -31,9 +31,9 @@ class Node :
             self.virtual_particule = particules[0]
             
         else :
-            self.virtual_particule = Particule(self.box_center, 0, 0, np.array([0,0]), -1)
+            self.virtual_particule = Particule(self.box_center, 0, 0, np.array([0,0]), -1)   # creates a virtual particule with no mass, velocity or force and an id ==-1
             self.generate_children(particules)          ##function which creates the tree
-            self.calculate_mass_COM()               
+            self.calculate_mass_COM()               # update the mass and the center of mass (COM)
     
     
     def calculate_mass_COM(self) : #update mass and center of mass, implicit recursive function with create_tree
@@ -43,7 +43,6 @@ class Node :
 
         for i in range (len(self.children)):
             if self.children[i] != None:
-                self.children[i].virtual_particule.print_particule()
                 mass += self.children[i].virtual_particule.mass
                 position += self.children[i].virtual_particule.mass * self.children[i].virtual_particule.position
 
@@ -56,45 +55,31 @@ class Node :
         x, y = self.box_center             
         size = self.box_size
         
-        particules_nw = []
-        particules_ne = []
-        particules_sw = []
-        particules_se = []
-
+        particules_children = [[],[],[],[]]
+        
         for part in particules :
             part_x, part_y = part.position
 
             if part_x > x :
                 if part_y > y :
-                    particules_ne.append(part)
+                    particules_children[1].append(part)
+                    
                 else :
-                    particules_se.append(part)
+                    particules_children[2].append(part)
+                    
             else :
                 if part_y > y :
-                    particules_nw.append(part)
+                    particules_children[0].append(part)
+                    
                 else :
-                    particules_sw.append(part)
+                    particules_children[3].append(part)
+        new_centers = [[x-size/2, y+size/2],[x+size/2, y+size/2],[x+size/2, y-size/2],[x-size/2, y-size/2]]        
+        for i in range(4) : 
+            if len(particules_children[i])>0 :
+                self.children[i] = Node(self.box_size/2, np.array(new_centers[i]), particules_children[i])
+                self.nb_children +=1
 
-        if len(particules_nw)>0 :
-            self.children[0] = Node(self.box_size/2, np.array([x-size/2, y+size/2]), particules_nw)
-            self.nb_children += 1
-
-        ## creates the ne child
-        if len(particules_ne)>0 :
-            self.children[1] = Node(self.box_size/2, np.array([x+size/2, y+size/2]), particules_ne)
-            self.nb_children += 1
-
-
-         ## creates the se child
-        if len(particules_se)>0 :
-            self.children[2] = Node(self.box_size/2, np.array([x+size/2, y-size/2]), particules_se)
-            self.nb_children += 1
-
-         ## creates the sw child
-        if len(particules_sw)>0 :
-            self.children[3] = Node(self.box_size/2, np.array([x-size/2, y-size/2]), particules_sw)
-            self.nb_children += 1
-
+        
 
 
 
