@@ -76,5 +76,15 @@ class Simulation :
             self.particules[i].position += self.particules[i].velocity*self.delta_t   # 1st order of integration
 
 
+    def update_force_velocity_position(self):     # leapfrog method
+        for i in range(self.nb_point):
+            ai = self.particules[i].force
+            self.particules[i].force = np.array([0.,0.]) # re-set the force for the next step
+            self.particules[i].potential = 0
+            self.calculate_force_target(self.particules[i], self.root)
+        
+            self.particules[i].position += self.particules[i].velocity*self.delta_t + 0.5*ai*self.delta_t**2
+            self.particules[i].velocity += 0.5*(ai + self.particules[i].force)*self.delta_t
+
 
 
