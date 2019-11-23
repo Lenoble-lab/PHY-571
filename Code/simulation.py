@@ -16,16 +16,15 @@ class Simulation :
     def step(self):
         self.nb_point = len(self.particules)
         self.set_tree()                 #create the tree with the current state of the particules
-        print("set tree finish")
         self.calculate_force()          #calcul the interaction on each particule
         self.update_velocity()          #update the velocity of each particule
         self.update_position()          #update the position of each particule
 
 
     def step_multiprocessing(self):
+        print(__name__)
         self.nb_point = len(self.particules)
         self.set_tree()                 #create the tree with the current state of the particules
-        print("set tree finish")
         self.calculate_force_mutliprocessing()          #calcul the interaction on each particule
         self.update_velocity()          #update the velocity of each particule
         self.update_position()    
@@ -54,7 +53,6 @@ class Simulation :
             
     
     def calculate_force_target(self, target_particule, temp_node):
-        
         particule2 = temp_node.virtual_particule  #particule (or virtual particule) in question
 
         vect_r = particule2.position - target_particule.position
@@ -82,10 +80,11 @@ class Simulation :
     
     def calculate_force_mutliprocessing(self): #using mutliprocessing
         
-        if __name__ == '__main__':
-            pool = multiprocessing.Pool()
-            pool.map(self.calculate_force_target, self.particules)
-            pool.close()
+        #multiprocessing.freeze_support()
+        print("multiprocessing")
+        pool = multiprocessing.Pool()
+        pool.map(self.calculate_force_target, self.particules)
+        pool.close()
 
 
     def update_velocity (self) :
