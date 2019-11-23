@@ -1,4 +1,5 @@
 from Tree import *
+import multiprocessing 
 
 class Simulation :
     def __init__(self, delta_t, size, center, G=1, theta = 1):
@@ -11,6 +12,7 @@ class Simulation :
         self.root = None        #root of the tree
         self.theta = theta          #parameter of the simulation
         self.eps = 10**(-5)          #qvoid collision
+    
     def step(self):
         self.nb_point = len(self.particules)
         self.set_tree()                 #create the tree with the current state of the particules
@@ -18,6 +20,15 @@ class Simulation :
         self.calculate_force()          #calcul the interaction on each particule
         self.update_velocity()          #update the velocity of each particule
         self.update_position()          #update the position of each particule
+
+
+    def step_multiprocessing(self):
+        self.nb_point = len(self.particules)
+        self.set_tree()                 #create the tree with the current state of the particules
+        print("set tree finish")
+        self.calculate_force_mutliprocessing()          #calcul the interaction on each particule
+        self.update_velocity()          #update the velocity of each particule
+        self.update_position()    
 
         """
         test= []
@@ -31,6 +42,10 @@ class Simulation :
     def set_tree(self):
         self.root = Node(self.size, self.center, self.particules)
 
+    
+    
+    
+    
     def calculate_force(self):
         for i in range (self.nb_point):
             self.particules[i].force = np.array([0.,0.]) # re-set the force for the next step
@@ -65,6 +80,13 @@ class Simulation :
                         self.calculate_force_target(target_particule, temp_node.children[i])
                         
     
+    def calculate_force_mutliprocessing(self): #using mutliprocessing
+        
+        if __name__ == '__main__':
+            pool = multiprocessing.Pool()
+            pool.map(self.calculate_force_target, self.particules)
+            pool.close()
+
 
     def update_velocity (self) :
         for i in range(self.nb_point):

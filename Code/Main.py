@@ -9,7 +9,7 @@ import sys
 sys.setrecursionlimit(10**5) 
 
 
-simul = Simulation (0.001, 100, np.array([0.,0.]))
+simul = Simulation (0.01, 100, np.array([0.,0.]))
 
 simul.particules = [Particule(np.array([0.1,0.1]), 1, 0,np.array([0.,0.]),0), 
                             Particule(np.array([-0.1,0.1]), 1, 0,np.array([0.,0.]),1),
@@ -60,7 +60,7 @@ def init_syst_soleil(s):
 init_syst_soleil(simul)
 
 N_part = len(simul.particules)
-N_cycle = 1000
+N_cycle = 500
 
 pos_x = [[]]*N_part
 pos_y = [[]]*N_part
@@ -75,7 +75,7 @@ frames_size = 100
 ax1 = fig.add_subplot(1,2,1)
 ax1.set_xlim(-frames_size, frames_size)
 ax1.set_ylim(-frames_size, frames_size)
-line, = ax1.plot([], [], 'o')
+line, = ax1.plot([], [], 'o', markersize=5)
 
 ax2 = fig.add_subplot(1,2,2)
 
@@ -96,7 +96,7 @@ def make_frame(t):
         pos_y[i] = pos_y[i] + [parti[i].position[1]]
 
 
-    simul.step()
+    simul.step_multiprocessing()
     parti = simul.particules
     N_part = len(simul.particules)
 
@@ -137,7 +137,7 @@ plt.figure()
 plt.subplot(1,2,1)
 plt.axis('equal')
 for i in range (N_part):
-    plt.plot(pos_x[i], pos_y[i], 'o')
+    plt.plot(pos_x[i], pos_y[i], 'o', markersize=5)
 
 plt.subplot(1,2,2)
 plt.plot(enery_cin, label = 'energy cinetic')
