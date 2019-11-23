@@ -20,6 +20,9 @@ https://www.cpht.polytechnique.fr/nextcloud/index.php/s/R6bCFRZrbgwoZkd?path=%2F
 python editeur : 
 [brochet Code]$ /usr/local/anaconda3-5.0.0/bin/python Main.py .
 
-/usr/local/anaconda3-5.0.0/bin/python -m cProfile -s tottime Main.p^C
+/usr/local/anaconda3-5.0.0/bin/python -m cProfile -s tottime Main.py
+
+Multiprocessing avec python : 
+https://medium.com/@urban_institute/using-multiprocessing-to-make-python-code-faster-23ea5ef996ba
 
 
