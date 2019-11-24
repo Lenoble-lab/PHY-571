@@ -9,13 +9,15 @@ class Particule :
         self.velocity = velocity    ## velocity of the particule
         self.id = id            ## number of the particule (-1 if the paticule doesnt really exist)
         self.potential = 0        #For calculation of total energy
-    
+        self.der_force = 0         #for second order integration shema
+
     def print_particule(self):
         print("particule")
         print(self.position, ' position')
         print(self.velocity, ' velocity')
         print(self.force, ' force')
         print(self.mass, " mass")
+        print(self.der_force, " der_force")
         print(" ")
 
 class Node :

@@ -10,6 +10,8 @@ sys.setrecursionlimit(10**5)
 
 
 simul = Simulation (0.005, 100, np.array([0.,0.]))
+N_part = len(simul.particules)
+N_cycle = 1000
 
 simul.particules = [Particule(np.array([0.1,0.1]), 1, 0,np.array([0.,0.]),0), 
                             Particule(np.array([-0.1,0.1]), 1, 0,np.array([0.,0.]),1),
@@ -21,7 +23,7 @@ simul.particules = [Particule(np.array([0., 0.]), 1, 0,np.array([0.,0.]),0),
                             Particule(np.array([0,1/2**2001]), 1, 0,np.array([0.,0.]),1)]
 
 def init_terr_soleil(s):
-    M_soleil = 10**3
+    M_soleil = 10**4
     M_terre = 1
     R = 10.
     
@@ -33,14 +35,20 @@ def init_terr_soleil(s):
     s.particules = [Particule(P_soleil, M_soleil, 0, V_soleil, 0), 
                             Particule(P_terre, M_terre, 0,V_terre, 0)]
 
+    R = 5.
+    
+    P_terre = np.array([R,0. ])
+    V_terre =np.array([0., np.sqrt(s.G * M_soleil/R)])
+    s.particules.append(Particule(P_terre, M_terre, 0,-V_terre, 0))
+
 def init_syst_soleil(s):
     M_soleil = 10**1
-    R_max = 10.  
+    R_max = 2.  
     P_soleil = np.array([0.,0.])
     V_soleil = np.array([0.,0.])
     s.particules = [Particule(P_soleil, M_soleil, 0, V_soleil, 0)]
 
-    N_part = 100
+    N_part = 20
 
     for i in range (N_part):
         theta = rnd.random() * 2 * np.pi
@@ -60,9 +68,7 @@ def init_syst_soleil(s):
 init_syst_soleil(simul)
 
 N_part = len(simul.particules)
-N_cycle = 500
-#simul.step_multiprocessing() #initialize
-
+simul.step_second_order()
 enery_pot_0, enery_cin_0 = 0, 0
 
 for i in range (N_part):
@@ -86,11 +92,11 @@ line, = ax1.plot([], [], 'o', markersize=5)
 
 ax2 = fig.add_subplot(1,2,2)
 
-line_ene_pot, = ax2.plot([0], [0], 'r', label = 'energy potential', linewidth = 1)
-line_ene_cin, = ax2.plot([0], [0], 'b', label = 'energy cinetic')
-line_ene_tot, = ax2.plot([0], [0], 'g', label = 'energy total')
+line_ene_pot, = ax2.plot([0], [0], 'r', label = 'energy potential', linewidth = 2)
+line_ene_cin, = ax2.plot([0], [0], 'b', label = 'energy cinetic', lw = 2)
+line_ene_tot, = ax2.plot([0], [0], 'g', label = 'energy total', lw = 2)
 ax2.set_xlim(0, 200)
-ax2.set_ylim(-10, (enery_cin_0 + enery_pot_0) *1.2)
+ax2.set_ylim(1.2 * enery_pot_0, enery_cin_0 *1.2)
 ax2.legend()
 
 steps = []
@@ -108,7 +114,7 @@ def make_frame(t):
         pos_y[i] = pos_y[i] + [parti[i].position[1]]
 
     if __name__ == '__main__':
-        simul.step()
+        simul.step_second_order()
     parti = simul.particules
     N_part = len(simul.particules)
 
@@ -131,6 +137,8 @@ def make_frame(t):
     line_ene_pot.set_data(steps, ene_pot)
     line_ene_tot.set_data(steps, ene_tot)
     
+
+
     print(' ')
     print(t, ' t')
     print(enery_pot[t])
@@ -148,8 +156,8 @@ def make_frame(t):
 
     return (line,  line_ene_tot, line_ene_cin, line_ene_pot)
 
-ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=0, repeat = False)
-
+ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
+ani.save('video.mp4')
 plt.show()
 
 
