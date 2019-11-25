@@ -1,5 +1,7 @@
 from Tree import *
-import multiprocessing 
+import multiprocessing
+import functools
+
 
 class Simulation :
     def __init__(self, delta_t, size, center, G=1, theta = 0.1):
@@ -26,7 +28,6 @@ class Simulation :
         self.update_force_velocity_position()         #update the velocity and position of each particule
 
     def step_multiprocessing(self):
-        print(__name__)
         self.nb_point = len(self.particules)
         self.set_tree()                 #create the tree with the current state of the particules
         self.calculate_force_mutliprocessing()          #calcul the interaction on each particule
@@ -39,21 +40,15 @@ class Simulation :
         self.calculate_force()          #calcul the interaction on each particule
         self.update_velocity_position_second_order()          #update the velocity of each particule
 
-        """
-        test= []
-        for i in range (self.nb_point):
-            if np.abs(self.particules[i].position[0]) > self.size or np.abs(self.particules[i].position[1]) > self.size :
-                test = test +[i]
-        for i in range (len(test)):
-            del self.particules[test[i]]
-        """
+        # test= []
+        # for i in range (self.nb_point):
+        #     if np.abs(self.particules[i].position[0]) > self.size or np.abs(self.particules[i].position[1]) > self.size :
+        #         test = test +[i]
+        # for i in range (len(test)):
+        #     del self.particules[test[i]]
 
     def set_tree(self):
         self.root = Node(self.size, self.center, self.particules)
-
-    
-    
-    
     
     def calculate_force(self):
         for i in range (self.nb_point):
@@ -62,7 +57,6 @@ class Simulation :
             self.particules[i].der_force = 0
 
             self.calculate_force_target(self.particules[i], self.root)
-            
     
     def calculate_force_target(self, target_particule, temp_node):
         particule2 = temp_node.virtual_particule  #particule (or virtual particule) in question
@@ -96,23 +90,17 @@ class Simulation :
                         
     
     def calculate_force_mutliprocessing(self): #using mutliprocessing
-        
-        #multiprocessing.freeze_support()
-        print("multiprocessing")
-        pool = multiprocessing.Pool()
-        pool.map(self.calculate_force_target, self.particules)
+        pool = multiprocessing.Pool(4)
+        pool.map(functools.partial(self.calculate_force_target, temp_node=self.root), self.particules,)
         pool.close()
-
 
     def update_velocity (self) :
         for i in range(self.nb_point):
             self.particules[i].velocity += (self.particules[i].force/self.particules[i].mass )*self.delta_t   #1st order of integration
 
-
     def update_position (self):
         for i in range(self.nb_point):
             self.particules[i].position += self.particules[i].velocity*self.delta_t   # 1st order of integration
-
 
     def update_force_velocity_position(self):     # leapfrog method
         for i in range(self.nb_point):

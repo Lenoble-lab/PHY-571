@@ -6,12 +6,15 @@ import matplotlib.animation as animation
 import numpy.random as rnd
 import sys
 
+import yappi
+yappi.start()
+
 sys.setrecursionlimit(10**5) 
 
 
 simul = Simulation (0.005, 100, np.array([0.,0.]))
 N_part = len(simul.particules)
-N_cycle = 1000
+N_cycle = 50
 
 simul.particules = [Particule(np.array([0.1,0.1]), 1, 0,np.array([0.,0.]),0), 
                             Particule(np.array([-0.1,0.1]), 1, 0,np.array([0.,0.]),1),
@@ -68,7 +71,7 @@ def init_syst_soleil(s):
 init_syst_soleil(simul)
 
 N_part = len(simul.particules)
-simul.step_second_order()
+simul.step_multiprocessing()
 enery_pot_0, enery_cin_0 = 0, 0
 
 for i in range (N_part):
@@ -113,8 +116,7 @@ def make_frame(t):
         pos_x[i] = pos_x[i] + [parti[i].position[0]]
         pos_y[i] = pos_y[i] + [parti[i].position[1]]
 
-    if __name__ == '__main__':
-        simul.step_second_order()
+    simul.step_multiprocessing()
     parti = simul.particules
     N_part = len(simul.particules)
 
@@ -157,7 +159,7 @@ def make_frame(t):
     return (line,  line_ene_tot, line_ene_cin, line_ene_pot)
 
 ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
-ani.save('video.mp4')
+# ani.save('video.mp4')
 plt.show()
 
 
@@ -182,4 +184,4 @@ plt.savefig('test.jpg')
 
 plt.show()  
     
-
+yappi.get_func_stats().print_all()
