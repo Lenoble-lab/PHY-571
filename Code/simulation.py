@@ -1,7 +1,7 @@
 from Tree import *
 import multiprocessing
 import functools
-
+from numba import jit
 
 class Simulation :
     def __init__(self, delta_t, size, center, G=1, theta = 0.1):
@@ -58,6 +58,7 @@ class Simulation :
 
             self.calculate_force_target(self.particules[i], self.root)
     
+
     def calculate_force_target(self, target_particule, temp_node):
         particule2 = temp_node.virtual_particule  #particule (or virtual particule) in question
 
