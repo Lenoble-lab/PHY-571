@@ -85,7 +85,7 @@ class Node:
 
 @jit
 def GravAccel(positions, masses, thetamax=0.7, G=1.):
-    center = (np.max(positions,axis=0)+np.min(positions,axis=0))/2       #center of bounding box
+    center = (np.max(positions,axis=0)+np.min(positions,axis=0))/2       #center of bounding box is the mean of the max and min particule
     topsize = np.max(np.max(positions,axis=0)-np.min(positions,axis=0))  #size of bounding box
     leaves = []  # want to keep track of leaf nodes
     topnode = Node(center, topsize, masses, positions, np.arange(len(masses)), leaves) #build the tree
@@ -123,8 +123,8 @@ def init_terr_soleil():
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
 def init_syst_soleil(N_part):
-    M_soleil = 10**1
-    R_max = 2.  
+    M_soleil = 10**3
+    R_max = 50.  
     P_soleil = np.array([0.,0.])
     V_soleil = np.array([0.,0.])
 
@@ -143,8 +143,8 @@ def init_syst_soleil(N_part):
     while i < N_part : 
 
         theta = rnd.random() * 2 * np.pi
-        # r = rnd.random() * R_max
-        r = np.abs(rnd.normal(0,10))
+        r = rnd.random() * R_max
+        #r = np.abs(rnd.normal(0,10))
         if r!=0 : 
             positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
             masses[i] = 1
@@ -163,8 +163,8 @@ t = time.clock()
 
 fig = plt.figure()
 
-positions, masses, velocities = init_syst_soleil(100)
-N_cycle = 2000
+positions, masses, velocities = init_syst_soleil(1000)
+N_cycle = 1000
 N_part = len(positions)
 
 pos = np.zeros((N_cycle+1, N_part, 2))
@@ -180,6 +180,13 @@ ax1.set_xlim(-frames_size, frames_size)
 ax1.set_ylim(-frames_size, frames_size)
 line, = ax1.plot([], [], 'o', markersize=3)
 
+"""
+t = time.clock()
+for i in range (40):
+    positions, velocities = step(positions, masses, velocities, 0.005)
+
+print(time.clock()-t)
+"""
 def make_frame(i):
     if i % 10 == 0:
         print (i, ' t ')
@@ -194,11 +201,12 @@ def make_frame(i):
     return line,
 
 ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
-ani.save("video_array.mp4")
+ani.save("1000_part_0.005_deltat_.mp4")
 print(time.clock() - t, 'temps')
+plt.show()
+
 plt.figure()
 for i in range (N_part):
     plt.plot(pos[:,i,0], pos[:,i,1], 'o')
 plt.axis('equal')
 plt.show()
-
