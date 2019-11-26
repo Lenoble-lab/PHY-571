@@ -164,7 +164,7 @@ t = time.clock()
 fig = plt.figure()
 
 positions, masses, velocities = init_syst_soleil(1000)
-N_cycle = 1000
+N_cycle = 2000
 N_part = len(positions)
 
 pos = np.zeros((N_cycle+1, N_part, 2))
@@ -201,7 +201,7 @@ def make_frame(i):
     return line,
 
 ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
-ani.save("1000_part_0.005_deltat_.mp4")
+ani.save("1000_part_0.005_deltat_0.005_gaussian.mp4")
 print(time.clock() - t, 'temps')
 plt.show()
 
