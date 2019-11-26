@@ -60,24 +60,23 @@ def init_milkyWay(N_part) :
     zo = 0.2
     Mh = 5.8
     gamma = 1
-    rc = 10
+    rc = 0.1
     Mb = 1.0/3
     a = 0.2
     c = 0.1
     Q = 1.5
-    Ro = = 8.5/3.5
+    Ro = 8.5/3.5
     alpha = (1-np.sqrt(np.pi)*gamma*np.exp((gamma/rc)**2)/rc*(1-scipy.special.erf(gamma/rc)))**(-1)
-
-    v_disk =  
-    v_halos = 
-    v_bord = 
-
     
-    positions = np.zeros(N_part)
+    v_disk = 10  
+    v_halos = 0.1
+    v_bord = 50
+    
+    positions = np.zeros((N_part,2))
     masses = np.zeros(N_part)
-    velocities = np.zeros(N_part)
+    velocities = np.zeros((N_part, 2))
 
-    for i in range(N_part/3) :
+    for i in range(N_part//3) :
         #initialisation for the disk
         theta = rnd.random() * 2 * np.pi        
         r = np.abs(rnd.normal(0, h))
@@ -92,24 +91,32 @@ def init_milkyWay(N_part) :
         # initialisation for the dark holes
         theta = rnd.random() * 2 * np.pi        
         r = np.abs(rnd.normal(0, h))
-        positions [N_part/3+i] = np.array([r*np.cos(theta), r*np.sin(theta)])
-        masses[i+N_part/3] = r*Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2)
-       '''
-        vr_h = G*(Mh*alpha/np.pi)**2/rc*scipy.integrate.quad(lambda x : np.exp(-(x/rc)**2)/(x**2+gamma**2)*scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc), r,np.inf)
-        v = 
-        '''
+        positions [N_part//3+i] = np.array([r*np.cos(theta), r*np.sin(theta)])
+        masses[i+N_part//3] = r*Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))
+
+  #           vr_h = G*(Mh*alpha/np.pi)**2/rc*scipy.integrate.quad(lambda x : np.exp(-(x/rc)**2)/(x**2+gamma**2)*scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc), r,np.inf)
+   #         v = 
+
         v = np.abs(rnd.normal(0, v_halos))
-        velocities[i+N_part/3] = v*np.array([-np.sin(theta), np.cos(theta)])
+        velocities[i+N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
         
         
         #initialisation for the bulges
         theta = rnd.random() * 2 * np.pi         
         x,y = np.abs(rnd.normal(0, a)), np.abs(rnd.normal(0, a))
         m = (x**2+y**2)/a**2
-        positions[2*N_part/3+i] = np.array([x, y)])
-        masses[i+2*N_part/3] = np.sqrt(x**2+y**2)*Mb/(2*np.pi*a*m*(m+1))
+        positions[2*N_part//3+i] = np.array([x, y])
+        masses[i+2*N_part//3] = np.sqrt(x**2+y**2)*Mb/(2*np.pi*a*m*(m+1))
         v = np.abs(rnd.normal(0, v_bord))
-        velocities[i+2*N_part/3] = v*np.array([-np.sin(theta), np.cos(theta)])
+        velocities[i+2*N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
 
     return positions, masses, velocities
 
+"""
+positions, masses, velocities = init_milkyWay(5000)
+
+import matplotlib.pyplot as plt
+plt.figure()
+plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
+plt.show()
+"""
