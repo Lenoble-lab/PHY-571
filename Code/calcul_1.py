@@ -5,7 +5,41 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from numba import jit
-from Init import *
+
+
+def init_syst_soleil(N_part):
+    M_soleil = 10**3
+    R_max = 50.  
+    P_soleil = np.array([0.,0.])
+    V_soleil = np.array([0.,0.])
+
+
+
+    positions = np.zeros((N_part, 2))
+    masses = np.ones(N_part) 
+    velocities = np.zeros((N_part, 2))
+
+    positions[0] = P_soleil
+    masses[0] = M_soleil
+    velocities[0] = V_soleil
+    
+    
+    i = 1
+    while i < N_part : 
+
+        theta = rnd.random() * 2 * np.pi
+        r = rnd.random() * R_max
+        #r = np.abs(rnd.normal(0,10))
+        if r!=0 : 
+            positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
+            M_tot = M_soleil + (r/R_max)**2 * N_part
+            velocities[i] = np.sqrt(M_tot/np.abs(r)) *np.array([-np.sin(theta), np.cos(theta)])
+            i += 1
+  
+    return positions, masses, velocities
+
+
+
 
 def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     """
@@ -128,23 +162,10 @@ def step_leap_frog(positions, masses, velocities, force_i, delta_t):
     """
     
     force, energy = GravAccel(positions, masses)
-    N_points = len(positions)
     velocities += 0.5*(force_i + force) * delta_t 
     positions += velocities * delta_t + 0.5*force_i * delta_t**2
     return positions, velocities, force, np.sum(energy)
 
-
-def step_2nd_order(positions, masses, velocities, delta_t):
-    """
-    put it together : update the tree, calculate the force/energy and finaly update position/velocity with a first order shema
-    """
-    force, energy, der_force = GravAccel(positions, masses, sec_order=True)
-    N_points = len(positions)
-    for i in range (N_points):
-        positions[i] += velocities[i] * delta_t + 0.5 * force[i]*delta_t**2 + 1/6 * der_force[i] * delta_t**3 
-        velocities[i] += force[i] * delta_t + 1/2 * der_force[i] * delta_t**2 
-
-    return positions, velocities, np.sum(energy)
 
 
 
@@ -156,10 +177,8 @@ t = time.clock()
 
 
 
-fig = plt.figure()
-
-positions, masses, velocities = init_collision_galaxies(500)
-N_cycle = 200
+positions, masses, velocities = init_syst_soleil(20)
+N_cycle = 1000
 N_part = len(positions)
 
 pos = np.zeros((N_cycle+1, N_part, 2))
@@ -168,45 +187,11 @@ energy_cin = np.zeros(N_cycle)
 cintetic_momentum = np.zeros(N_cycle)
 
 pos[0] = positions
-
-fig = plt.figure()
-frames_size = 400
-ax1 = fig.add_subplot(1,2,1)
-ax1.set_xlim(-frames_size, frames_size)
-ax1.set_ylim(-frames_size, frames_size)
-line, = ax1.plot([], [], 'o', markersize=2)
-
-ax2 = fig.add_subplot(1,2,2)
-
-line_ene_pot, = ax2.plot([0], [0], 'r', label = 'energy potential', linewidth = 2)
-line_ene_cin, = ax2.plot([0], [0], 'b', label = 'energy cinetic', lw = 2)
-line_ene_tot, = ax2.plot([0], [0], 'g', label = 'energy total', lw = 2)
-line_mom, = ax2.plot([0], [0], 'black', label = 'cinetic momentum', lw = 2)
-
-ax2.set_xlim(0, 200)
-
-energy_cin_0 = 0.5 * np.sum(masses * [np.sum(velocities[i,:]**2) for i in range (len(velocities))])
-
-ax2.set_ylim(5 * -energy_cin_0, energy_cin_0 *1.5)
-ax2.legend()
-
-nt = 200
-
-"""
-t = time.clock()
-for i in range (40):
-    positions, velocities = step(positions, masses, velocities, 0.005)
-
-print(time.clock()-t)
-"""
 force, energy = GravAccel(positions, masses)
 
-def make_frame(i):
-    if i % 10 == 0:
+for i in range (N_cycle):
+    if i % 100 == 0:
         print (i, ' t ')
-    global positions
-    global velocities
-    global force
     
     positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.005)
     # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
@@ -215,31 +200,8 @@ def make_frame(i):
     pos [i+1] = positions
     energy_pot[i] = energy_pot_t/2
     energy_cin[i] = 0.5 * np.sum(masses * [np.sum(velocities[i,:]**2) for i in range (len(velocities))])
-    cintetic_momentum[i] =  0.1 * np.sum(masses * [positions[i][0] * velocities[i][1] - positions[i][1] * velocities[i][0] for i in range (len(positions))])
+    cintetic_momentum[i] =  np.sum(masses * [positions[i][0] * velocities[i][1] - positions[i][1] * velocities[i][0] for i in range (len(positions))])
     
-    line.set_data(pos[i,:,0], pos[i,:,1])
-    if i<nt and i>0: 
-        line_ene_cin.set_data(range(0,i), energy_cin[0:i])
-        line_ene_pot.set_data(range(0,i), energy_pot[0:i])
-        line_ene_tot.set_data(range(0,i), energy_pot[0:i] + energy_cin[0:i])
-        line_mom.set_data(range(0,i), cintetic_momentum[0:i])
-
-    elif i>=nt : 
-        line_ene_cin.set_data(range(0,nt), energy_cin[-nt +i:i])
-        line_ene_pot.set_data(range(0,nt), energy_pot[-nt + i:i])
-        line_ene_tot.set_data(range(0,nt), energy_pot[-nt+i:i] + energy_cin[-nt+i:i])
-        line_mom.set_data(range(0,nt), cintetic_momentum[-nt + i:i])
 
 
-    return (line,  line_ene_tot, line_ene_cin, line_ene_pot, line_mom)
-
-ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
-#ani.save("1000_part_0.005_deltat_0.005_gaussian.mp4")
-print(time.clock() - t, 'temps')
-plt.show()
-
-plt.figure()
-for i in range (N_part):
-    plt.plot(pos[:,i,0], pos[:,i,1], 'o')
-plt.axis('equal')
-plt.show()
+np.save("../analyse/data", np.array([pos, energy_pot, energy_cin, cintetic_momentum]))

@@ -89,7 +89,7 @@ if __name__ == '__main__' :
 
 
     fig = plt.figure()
-    frames_size = 100
+    frames_size = 200
     ax1 = fig.add_subplot(1,2,1)
     ax1.set_xlim(-frames_size, frames_size)
     ax1.set_ylim(-frames_size, frames_size)
