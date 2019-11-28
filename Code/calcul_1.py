@@ -5,8 +5,9 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from numba import jit
+from numba import autojit, prange
 
-
+t = time.clock()
 def init_syst_soleil(N_part):
     M_soleil = 10**3
     R_max = 50.  
@@ -120,7 +121,7 @@ class Node:
                                                 ids[in_tree],
                                                 leaves))
 
-@jit
+@autojit
 def GravAccel(positions, masses, sec_order = False, thetamax=0.7, G=1.):
     center = (np.max(positions,axis=0)+np.min(positions,axis=0))/2       #center of bounding box is the mean of the max and min particule
     topsize = np.max(np.max(positions,axis=0)-np.min(positions,axis=0))  #size of bounding box
@@ -133,14 +134,20 @@ def GravAccel(positions, masses, sec_order = False, thetamax=0.7, G=1.):
     force = np.empty_like(positions)
     energy = np.empty_like(positions)
     
-
+    """
     for i,leaf in enumerate(leaves):
         calculate_force(topnode, leaf, thetamax, G)  # update energy and force of every particules
         force[leaf.id] = leaf.force  # store force and accéleration in order to update the velocity and the position later
         energy[leaf.id] = leaf.energy
         if sec_order : der_force[leaf.id] = leaf.der_force
-    
-    if sec_order : return force, energy, der_force
+    """
+
+    for i in prange(force.shape[0]):
+        leaf = leaves[i]
+        calculate_force(topnode, leaf, thetamax, G)  # update energy and force of every particules
+        force[leaf.id] = leaf.force  # store force and accéleration in order to update the velocity and the position later
+        energy[leaf.id] = leaf.energy
+
     return force, energy
     
 
@@ -178,7 +185,7 @@ t = time.clock()
 
 
 positions, masses, velocities = init_syst_soleil(20)
-N_cycle = 1000
+N_cycle = 2000
 N_part = len(positions)
 
 pos = np.zeros((N_cycle+1, N_part, 2))
@@ -203,5 +210,5 @@ for i in range (N_cycle):
     cintetic_momentum[i] =  np.sum(masses * [positions[i][0] * velocities[i][1] - positions[i][1] * velocities[i][0] for i in range (len(positions))])
     
 
-
-np.save("../analyse/data", np.array([pos, energy_pot, energy_cin, cintetic_momentum]))
+print(time.clock() - t, ' time')
+#np.save("../analyse/data", np.array([pos, energy_pot, energy_cin, cintetic_momentum]))

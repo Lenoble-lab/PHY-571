@@ -11,6 +11,27 @@ import scipy.integrate
 import matplotlib.pyplot as plt
 
 
+
+def init_syst_2_corps():
+    M_1 = 100
+    M_2 = 100
+    R = 5.
+    
+
+
+    #T = np.sqrt(a**3 * 4*np.pi**2 / (M_soleil + M_terre))
+
+    P_1 = np.array([M_2/M_1 * R/(1 + M_2/M_1),0.])
+    P_2 = np.array([M_1/M_2 * R/(1 + M_1/M_2), R])
+
+    # T_1 = 
+
+    V_soleil = np.array([2*np.pi*R/T,0.])
+    V_terre =np.array([-2*np.pi*R/T, 0.])
+ 
+
+    return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
+
 def init_terr_soleil():
     M_soleil = 10**4
     M_terre = 1
@@ -20,7 +41,7 @@ def init_terr_soleil():
     P_terre = np.array([0., R])
 
     V_soleil = np.array([0.,0.])
-    V_terre =np.array([np.sqrt(M_soleil/R), 0.])
+    V_terre =np.array([np.sqrt(M_soleil/R)/2, 0.])
     
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
@@ -108,13 +129,16 @@ def init_collision_galaxies(N_part):
 
     pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, 30)
 
-    pos_2 = pos_2 + np.ones_like(pos_2) * 200
-    
-    masses_2[0] = masses_1[0]/10**2
+    pos_2 = pos_2 + np.ones_like(pos_2) * 100 
+
+    for i in range (len(vel_2)):
+        vel_2[i] = vel_2[i] + np.array([np.sqrt(np.sum(masses_1)/np.sqrt(2000))])
+    masses_2[0] = masses_1[0]/10
 
     return np.concatenate((pos_1, pos_2), axis = 0), np.concatenate((masses_1, masses_2), axis = 0), np.concatenate((vel_1, vel_2), axis = 0)
 
-positions, masses, velocities = init_collision_galaxies(5000)
+
+positions, masses, velocities = init_collision_galaxies(6000)
 
 plt.figure()
 plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
