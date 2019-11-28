@@ -94,8 +94,10 @@ def init_milkyWay(N_part) :
         positions [N_part//3+i] = np.array([r*np.cos(theta), r*np.sin(theta)])
         masses[i+N_part//3] = r*Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))
 
-  #           vr_h = G*(Mh*alpha/np.pi)**2/rc*scipy.integrate.quad(lambda x : np.exp(-(x/rc)**2)/(x**2+gamma**2)*scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc), r,np.inf)
-   #         v = 
+        """
+        vr_h = G*(Mh*alpha/np.pi)**2/rc*scipy.integrate.quad(lambda x : np.exp(-(x/rc)**2)/(x**2+gamma**2)*scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc), r,np.inf)
+        v = 2*vr_h*np.scipy.special.erfinv(vr_h**4*0.5*np.random())
+        """
 
         v = np.abs(rnd.normal(0, v_halos))
         velocities[i+N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
@@ -107,6 +109,13 @@ def init_milkyWay(N_part) :
         m = (x**2+y**2)/a**2
         positions[2*N_part//3+i] = np.array([x, y])
         masses[i+2*N_part//3] = np.sqrt(x**2+y**2)*Mb/(2*np.pi*a*m*(m+1))
+
+        """
+        v_rhd = (1/(Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))+Md*np.exp(-r/h)/(4*np.pi*h**2)))*scipy.integrate.quad(lambda x: (Mh*alpha*np.exp(-x**2/rc**2)/(2*np.pi**(3/2)*rc*(x**2+gamma**2))+Md*np.exp(-x/h)/(4*np.pi*h**2))*G*(Md+scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc))/x**2,r, np.inf) 
+        v_rb = Mb/(2*np.pi*a*m*(m+1))*np.scipy.integrate.quad(lambda x : Mb/(2*np.pi*a*(x/a)**2*((x/a)**2+1))*G*Mb*(x/a)**4/(1+(x/a)**2)**2, r, np.inf)
+        vr_b= np.sqrt(v_rhd+v_rb)
+        v = 2*np.sqrt(2/np.pi)*np.scipy.special.erfinv(vr_b**4*0.5*np.random())/(vr_b**2)
+        """
         v = np.abs(rnd.normal(0, v_bord))
         velocities[i+2*N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
 
