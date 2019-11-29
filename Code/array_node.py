@@ -146,19 +146,6 @@ def step_2nd_order(positions, masses, velocities, delta_t):
 
     return positions, velocities, np.sum(energy)
 
-def init_collision_galaxies(N_part):
-    pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, 100)
-
-    pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, 30)
-
-    pos_2 = pos_2 + np.ones_like(pos_2) * 100 
-
-    for i in range (len(vel_2)):
-        vel_2[i] = vel_2[i] + np.array([np.sqrt(np.sum(masses_1)/np.sqrt(2000))])
-    masses_2[0] = masses_1[0]/10
-
-    return np.concatenate((pos_1, pos_2), axis = 0), np.concatenate((masses_1, masses_2), axis = 0), np.concatenate((vel_1, vel_2), axis = 0)
-
 
 
 
@@ -171,7 +158,7 @@ t = time.clock()
 
 fig = plt.figure()
 
-positions, masses, velocities = init_collision_galaxies(5000)
+positions, masses, velocities = init_collision_galaxies(40)
 N_cycle = 1000
 N_part = len(positions)
 
@@ -221,7 +208,7 @@ def make_frame(i):
     global velocities
     global force
     
-    positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.005)
+    positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.001)
     # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
     # positions, velocities, force, energy_pot_t = step_2nd_order(positions, masses, velocities, force, 0.005)
 

@@ -46,7 +46,7 @@ def init_terr_soleil():
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
 def init_syst_soleil(N_part, R_max = 50.):
-    M_soleil = 10**3
+    M_soleil = 10**6
     P_soleil = np.array([0.,0.])
     V_soleil = np.array([0.,0.])
 
@@ -131,19 +131,23 @@ def init_collision_galaxies(N_part):
 
     pos_2 = pos_2 + np.ones_like(pos_2) * 100 
 
-    for i in range (len(vel_2)):
-        vel_2[i] = vel_2[i] + np.array([np.sqrt(np.sum(masses_1)/np.sqrt(2000))])
-    masses_2[0] = masses_1[0]/10
+    masses_1[0] = 10**6
+    masses_2[0] = masses_1[0] 
 
+
+    for i in range (len(vel_2)):
+        vel_2[i] = vel_2[i] + np.sqrt(np.sum(masses_1)/np.sqrt(2000 * 2)) * np.array([-1., 1.])/2
+    
     return np.concatenate((pos_1, pos_2), axis = 0), np.concatenate((masses_1, masses_2), axis = 0), np.concatenate((vel_1, vel_2), axis = 0)
 
 
 positions, masses, velocities = init_collision_galaxies(6000)
 
+"""
 plt.figure()
 plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
 plt.show()
-
+"""
 
 def init_milkyWay(N_part) :
 
