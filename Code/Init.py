@@ -20,6 +20,7 @@ def init_carre_random(N_part, R):
         positions[i] = np.array([R/2 * rnd.random() - R/2, R/2 * rnd.random() - R/2])
 
     return positions, masses, velocities
+
 def init_syst_2_corps():
     M_1 = 100
     M_2 = 100
@@ -49,7 +50,7 @@ def init_terr_soleil():
     P_terre = np.array([0., R])
 
     V_soleil = np.array([0.,0.])
-    V_terre =np.array([np.sqrt(M_soleil/R)/2, 0.])
+    V_terre =np.array([np.sqrt(M_soleil/R), 0.])
     
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 

@@ -158,7 +158,7 @@ t = time.clock()
 
 fig = plt.figure()
 
-positions, masses, velocities = init_collision_galaxies(10)
+positions, masses, velocities = init_terr_soleil()
 N_cycle = 1000
 N_part = len(positions)
 
@@ -208,7 +208,7 @@ def make_frame(i):
     global velocities
     global force
     
-    positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.01)
+    positions, velocities, force, energy_pot_t = step(positions, masses, velocities, force, 0.005)
     # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
     # positions, velocities, force, energy_pot_t = step_2nd_order(positions, masses, velocities, force, 0.005)
 
@@ -233,13 +233,42 @@ def make_frame(i):
 
     return (line,  line_ene_tot, line_ene_cin, line_ene_pot, line_mom)
 
-ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
+#ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
 #ani.save("1000_part_0.005_deltat_0.005_gaussian.mp4")
 print(time.clock() - t, 'temps')
-plt.show()
+#plt.show()
 
+def calcul(N_cycle):
+    global positions
+    global velocities
+    global force
+    for i in range (N_cycle):
+        if i % 100 == 0:
+            print (i, ' t ')
+        
+        positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.002)
+        # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
+        # positions, velocities, force, energy_pot_t = step_2nd_order(positions, masses, velocities, force, 0.005)
+
+        pos [i+1] = positions
+        energy_pot[i] = energy_pot_t/2
+        energy_cin[i] = 0.5 * np.sum(masses * [np.sum(velocities[i,:]**2) for i in range (len(velocities))])
+        cintetic_momentum[i] =  0.1 * np.sum(masses * [positions[i][0] * velocities[i][1] - positions[i][1] * velocities[i][0] for i in range (len(positions))])
+
+calcul(N_cycle)
 plt.figure()
 for i in range (N_part):
     plt.plot(pos[:,i,0], pos[:,i,1], 'o')
 plt.axis('equal')
+plt.savefig("../rapport/trace_terre_soleil_0.002.jpg")
+
+plt.figure()
+
+plt.plot(range(0,N_cycle), energy_cin,  'r', label = 'energy potential', linewidth = 2)
+plt.plot(range(0,N_cycle), energy_pot, 'b', label = 'energy cinetic', lw = 2)
+plt.plot(range(0, N_cycle), energy_cin + energy_pot , 'g', label = 'energy total', lw = 2)
+plt.plot(range(0,N_cycle), cintetic_momentum, 'black', label = 'cinetic momentum', lw = 2)
+#plt.axis('equal')
+plt.savefig("../rapport/graph_terre_soleil_0.002.jpg")
 plt.show()
+
