@@ -353,7 +353,7 @@ Valeur
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}$
+\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}[G]J$
 \end_inset
 
 
@@ -376,7 +376,7 @@ Valeur
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500$
+\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500[G]J$
 \end_inset
 
 
@@ -399,7 +399,7 @@ Moment cinétique
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316$
+\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316[G]Jm$
 \end_inset
 
 
@@ -917,6 +917,49 @@ Lors des simulation, nous tirons les particules au hasard.
  et perturbe l'énergie totale du système très fortement.
  Pour cela, nous avons imposé un périmètre d'environ 1/10 du rayon de la
  distribution de masse sans particule.
+\end_layout
+
+\begin_layout Subsection
+Simulations obtenues :
+\end_layout
+
+\begin_layout Standard
+A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
+ calculs avec un grand nombre de particules (plusieurs milliers).
+ Ces calculs mettaient plusieurs heures à tourner.
+ Nous avions comme objectif d'obtenir des simulations similaires à 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+.
+ Pour cela, il nous fallait tout d'abord une simulation viable pour modéliser
+ une galaxie.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation galactique
+\end_layout
+
+\begin_layout Standard
+La simulation d'une galaxie dépend énormément des conditions initiales :
+ masse de trou noir, distribution de masse et de vitesse.
+\end_layout
+
+\begin_layout Standard
+Pour commencer, nous avons pris une distribution de masse proportionnelle
+ à 
+\begin_inset Formula $\frac{1}{r}$
+\end_inset
+
+ et un vitesse pour chaque particule égale à 
+\begin_inset Formula $v(r)=\sqrt{G\frac{M(\leq r)}{R}}$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

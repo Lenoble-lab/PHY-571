@@ -923,8 +923,51 @@ Lors des simulation, nous tirons les particules au hasard.
 Simulations obtenues :
 \end_layout
 
+\begin_layout Standard
+A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
+ calculs avec un grand nombre de particules (plusieurs milliers).
+ Ces calculs mettaient plusieurs heures à tourner.
+ Nous avions comme objectif d'obtenir des simulations similaires à 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+.
+ Pour cela, il nous fallait tout d'abord une simulation viable pour modéliser
+ une galaxie.
+\end_layout
+
 \begin_layout Subsubsection
 Simulation galactique
+\end_layout
+
+\begin_layout Standard
+La simulation d'une galaxie dépend énormément des conditions initiales :
+ masse de trou noir, distribution de masse et de vitesse.
+\end_layout
+
+\begin_layout Standard
+Pour commencer, nous avons pris une distribution de masse proportionnelle
+ à 
+\begin_inset Formula $\frac{1}{r}$
+\end_inset
+
+ et un vitesse pour chaque particule égale à 
+\begin_inset Formula $v(r)=\sqrt{G\frac{M(\leq r)}{R}}$
+\end_inset
+
+.
+ Cette vitesse assure une stabilité et évite que les particules s'effondrent
+ au centre ou se libère du potentiel central.
+ Nous nous attendons à voir les inhomogénéité de densité lié à l'initialisation
+ augmenter jusqu'à former des filaments.
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Standard
