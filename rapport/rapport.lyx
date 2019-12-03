@@ -30,7 +30,16 @@
 \index_command default
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry false
 \use_package amsmath 1
@@ -304,24 +313,103 @@ Dans cette simulation, nous avons utilisé un pas de temps de 0.002 et un
 \end_layout
 
 \begin_layout Standard
-L'énergie potentielle vaut : 
-\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}$
-\end_inset
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-J.
+\begin_layout Plain Layout
+Grandeur
 \end_layout
 
-\begin_layout Standard
-L'énergie cinétique vaut : 
-\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500$
 \end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
 
-J.
+\begin_layout Plain Layout
+Valeur
 \end_layout
 
-\begin_layout Standard
-Le moment cinétique (selon l'axe orthogonal au plan) vaut : 
-\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316.$
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Énergie potentielle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}[G]J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Énergie cinétique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500[G]J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Moment cinétique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316[G]Jm$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
 \end_inset
 
 
@@ -333,7 +421,7 @@ Ainsi, l’algorithme est fiable est donne des résultats cohérents pour le
 \end_layout
 
 \begin_layout Subsection
-Étude des différents schéma d'intégration
+Étude des différents schéma d'intégration et des pas de temps
 \end_layout
 
 \begin_layout Standard
@@ -673,9 +761,181 @@ Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
  schéma du deuxième ordre, ce qui était attendu : schéma à l'ordre supérieur
  et symétrique ne temps.
  La trajectoire semble cependant identique.
+ Pour des simulations beaucoup plus longues, nous avons remarqué que les
+ deux premiers schéma conservait très mal l'énergie par rapport au dernier.
+ A chaque fois, l'énergie dérivait et n'était pas conservée au bout d'un
+ certain pas de temps.
 \end_layout
 
 \begin_layout Standard
+Ainsi, nous avons vu les différence entre les schémas.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "articleN-bodycours"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
+ adopter pour une simulation.
+ En effet, le pas de temps est uniquement utilisé pour déduire l'accélération
+ et la vitesse à partir de la force calculée.
+ Si la force est très importante, alors l'accélération le sera aussi et
+ la vitesse variera beaucoup.
+ Le pas de temps devra alors être assez faible pour conserver l'énergie.
+ Cette situation est observée lorsque le satellite se rapproche du soleil.
+ La force varie de plus énormément avec la position dans ce cas.
+\end_layout
+
+\begin_layout Paragraph
+Exemple de simulation où le pas de temps est trop petit :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_5_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_5_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Simulation obtenue avec les même paramètre que précédemment mais avec une
+ distance de 5 du satellite au soleil.
+ Le schéma d'intégration est leapfrog.
+\end_layout
+
+\begin_layout Standard
+Ainsi, lors d'une simulation avec de nombreuses particules et un point centrale
+ très massif (comme c'est le cas dans une galaxie ou pour le système solaire),
+ les particules situées proches du centres seront plus sensibles au pas
+ de temps.
+ Dans nos simulation, nous n'avons pas implémenté de pas de temps variable
+ selon la valeur de la force, mais cela aurait pu être un bon prolongement.
+\end_layout
+
+\begin_layout Standard
+Lors des simulation, nous tirons les particules au hasard.
+ Il se peut alors qu'une particule se trouve très proche de l'objet massif
+ et perturbe l'énergie totale du système très fortement.
+ Pour cela, nous avons imposé un périmètre d'environ 1/10 du rayon de la
+ distribution de masse sans particule.
+\end_layout
+
+\begin_layout Subsection
+Simulations obtenues :
+\end_layout
+
+\begin_layout Subsubsection
+Simulation galactique
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "bibliographie"
+options "plain"
+
+\end_inset
+
 
 \end_layout
 
