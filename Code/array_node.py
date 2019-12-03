@@ -158,7 +158,7 @@ t = time.clock()
 
 fig = plt.figure()
 
-positions, masses, velocities = init_collision_galaxies(40)
+positions, masses, velocities = init_collision_galaxies(10)
 N_cycle = 1000
 N_part = len(positions)
 
@@ -208,7 +208,7 @@ def make_frame(i):
     global velocities
     global force
     
-    positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.001)
+    positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.01)
     # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
     # positions, velocities, force, energy_pot_t = step_2nd_order(positions, masses, velocities, force, 0.005)
 

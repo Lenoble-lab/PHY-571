@@ -11,7 +11,15 @@ import scipy.integrate
 import matplotlib.pyplot as plt
 
 
+def init_carre_random(N_part, R):
+    positions = np.zeros((N_part, 2))
+    masses = np.ones(N_part) 
+    velocities = np.zeros((N_part, 2))
 
+    for i in range (N_part):
+        positions[i] = np.array([R/2 * rnd.random() - R/2, R/2 * rnd.random() - R/2])
+
+    return positions, masses, velocities
 def init_syst_2_corps():
     M_1 = 100
     M_2 = 100
@@ -67,7 +75,7 @@ def init_syst_soleil(N_part, R_max = 50.):
         theta = rnd.random() * 2 * np.pi
         r = rnd.random() * R_max
         #r = np.abs(rnd.normal(0,10))
-        if r!=0 : 
+        if r > R_max/30 + 7 : 
             positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
             M_tot = M_soleil + (r/R_max)**2 * N_part
             velocities[i] = np.sqrt(M_tot/np.abs(r)) *np.array([-np.sin(theta), np.cos(theta)])
@@ -114,7 +122,7 @@ def init_galaxy(N_part, R_max = 100):
         theta = rnd.random() * 2 * np.pi
         r = -h * np.log(R_max * rnd.random()/M_tot)             #distance to the center of the galaxy
 
-        if r!=0 : 
+        if r > R_max/10 : 
             positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
 
             M_int = M_BH + 2*np.pi * M_disk * (-1 + (1-r)*np.exp(-r))  #density of mass at the center
@@ -124,24 +132,25 @@ def init_galaxy(N_part, R_max = 100):
     return positions, masses, velocities
 
 
-def init_collision_galaxies(N_part):
-    pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, 100)
+def init_collision_galaxies(N_part, R_max = 300):
 
-    pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, 30)
+    pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, R_max)
 
-    pos_2 = pos_2 + np.ones_like(pos_2) * 100 
+    pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, R_max/3)
+
+    pos_2 = pos_2 + np.ones_like(pos_2) * R_max 
 
     masses_1[0] = 10**6
     masses_2[0] = masses_1[0] 
 
 
     for i in range (len(vel_2)):
-        vel_2[i] = vel_2[i] + np.sqrt(np.sum(masses_1)/np.sqrt(2000 * 2)) * np.array([-1., 1.])/2
+        vel_2[i] = vel_2[i] + np.sqrt(np.sum(masses_1)/np.sqrt(R_max**2 * 2)) * np.array([-1., 1.])/2
     
     return np.concatenate((pos_1, pos_2), axis = 0), np.concatenate((masses_1, masses_2), axis = 0), np.concatenate((vel_1, vel_2), axis = 0)
 
 
-positions, masses, velocities = init_collision_galaxies(6000)
+# positions, masses, velocities = init_carre_random(4000, 400)
 
 """
 plt.figure()
