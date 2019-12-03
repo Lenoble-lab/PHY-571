@@ -1,0 +1,943 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Rapport d'EA : résolution numérique du proglème à N-corps
+\end_layout
+
+\begin_layout Author
+Romain Lenoble - Chloé Vernière
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Section
+Méthodes pour résoudre le problème à N-corps
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Chloé
+\end_layout
+
+\begin_layout Subsection
+Equation
+\end_layout
+
+\begin_layout Subsection
+Calcul numérique
+\end_layout
+
+\begin_layout Subsection
+Time integration
+\end_layout
+
+\begin_layout Section
+Simulations réalisées
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Romain
+\end_layout
+
+\begin_layout Standard
+Nous avons codé l'algorithme dans le fichier /code du git.
+\end_layout
+
+\begin_layout Standard
+Au début (pendant les deux premières semaines), nous sommes partis en utilisant
+ des classes : c'est ce qui nous semblait le plus simple au vu de la complexité
+ de l’algorithme.
+ Nous avons créer une classe pour les particules, une pour les nœuds de
+ l'arbre et une pour l'arbre en entier.
+ La classe particule était particulièrement lourde, elle contenait la vitesse,
+ la position, la masse, l'énergie, l’accélération et la force qui s'exerçait
+ sur la particule notamment.
+ Lorsque nous avons voulu optimiser le code en augmentant le nombre de particule
+, nous somme rapidement arrivé à des problèmes lié à cette structure : le
+ code était très lent et nous étions limité en mémoire.
+\end_layout
+
+\begin_layout Standard
+Pour palier à ces problèmes, nous avons réécris le code en nous affranchissant
+ au maximum de la structure de classe et en utilisant des tableaux numpy
+ qui sont beaucoup plus rapide à traiter par l'ordinateur.
+ Dans la dernière version du code (fichier array_node), nous n'avons plus
+ qu'une classe : la classe Node pour coder l'arbre.
+ Le reste des données est stocké dans des tableaux où l'indice correspond
+ à une particule en particulier.
+ Cette nouvelle architecture a permis un gain de temps énorme (le code est
+ près de 10 fois plus rapide) et nous a permis de lancer des calculs avec
+ beaucoup plus de particule.
+\end_layout
+
+\begin_layout Standard
+Les calculs restent tout de même très gourmand en temps, même sur les ordinateur
+s des salles d'informatique qui était environ dix fois plus rapide que nos
+ ordinateurs personnels.
+ Nous avons essayé d'optimiser la rapidité du code avec du multiprocessing
+ mais l'architecture du code est assez complexe et nécessite d'avoir accès
+ au même information en même temps.
+ La partie la plus gourmande est le calcul des interactions à chaque pas
+ de temps entre toutes les particules (en 
+\begin_inset Formula $O(nlog(n))$
+\end_inset
+
+).
+ Pour chaque particule, nous calculions les intéractions avec ses voisines
+ selon la descente de l'arbre, comme expliqué plus haut.
+ Nous aurions voulu utiliser du multiprocessing pour que chaque force soit
+ calculée en même temps mais chaque calcul nécessitait l'accès aux même
+ données, ce qui ne facilitait pas cette pratique.
+\end_layout
+
+\begin_layout Subsection
+Vérification de la validité de l'algorithme
+\end_layout
+
+\begin_layout Standard
+La première étape a été de vérifier si notre algorithme avait une bonne
+ précision.
+ Pour cela, nous avons utilisé le problème à deux corps dont la solution
+ analytique est connue.
+ Nous avons notamment simulé un système Terre-Soleil où l'un des deux corps
+ a une masse bien supérieur à l'autre.
+\end_layout
+
+\begin_layout Standard
+Voilà les résultats obtenus avec ce système, avec les conditions initiales
+ du mouvement circulaire uniforme (vitesse nulle pour le soleil et 
+\begin_inset Formula $v=\sqrt{G\frac{M}{R}}$
+\end_inset
+
+ pour la Terre) et un rapport 
+\begin_inset Formula $10^{4}$
+\end_inset
+
+ entre les masses (la masse de l'objet central vaut 
+\begin_inset Formula $10^{4}$
+\end_inset
+
+et celle du satellite 1) :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename graph_terre_soleil_0.002.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.002.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dans cette simulation, nous avons utilisé un pas de temps de 0.002 et un
+ schéma d'intégration du premier ordre (d'Euler).
+ On obtient bien une trajectoire circulaire et l'énergie est bien conservée.
+ On peut vérifier les valeurs obtenues par le calcul.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Grandeur
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Valeur
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Énergie potentielle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}[G]J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Énergie cinétique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500[G]J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Moment cinétique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316[G]Jm$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ainsi, l’algorithme est fiable est donne des résultats cohérents pour le
+ système à deux corps.
+\end_layout
+
+\begin_layout Subsection
+Étude des différents schéma d'intégration et des pas de temps
+\end_layout
+
+\begin_layout Standard
+Comme vu dans la première partie, différents schéma d'intégrations existent.
+ Ils donnent des résultats différents selon le pas de temps choisi.
+ La principale différence observée est sur la conservation (ou non ) de
+ l'énergie.
+\end_layout
+
+\begin_layout Standard
+Nous allons comparer ici le schema d'Euler du premier ordre, le schéma leapfrog
+ et le schéma du deuxième ordre pour le même pas de temps dans la situation
+ précédente.
+ Le pas de temps vaut 0.007.
+\end_layout
+
+\begin_layout Paragraph
+Shéma d'Euler :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_euler_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_euler_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Schema Leapfrog :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Intégrateur de Hermite développé au 2ème ordre :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_2nd_order_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_2nd_order_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
+ schéma du deuxième ordre, ce qui était attendu : schéma à l'ordre supérieur
+ et symétrique ne temps.
+ La trajectoire semble cependant identique.
+ Pour des simulations beaucoup plus longues, nous avons remarqué que les
+ deux premiers schéma conservait très mal l'énergie par rapport au dernier.
+ A chaque fois, l'énergie dérivait et n'était pas conservée au bout d'un
+ certain pas de temps.
+\end_layout
+
+\begin_layout Standard
+Ainsi, nous avons vu les différence entre les schémas.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "articleN-bodycours"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
+ adopter pour une simulation.
+ En effet, le pas de temps est uniquement utilisé pour déduire l'accélération
+ et la vitesse à partir de la force calculée.
+ Si la force est très importante, alors l'accélération le sera aussi et
+ la vitesse variera beaucoup.
+ Le pas de temps devra alors être assez faible pour conserver l'énergie.
+ Cette situation est observée lorsque le satellite se rapproche du soleil.
+ La force varie de plus énormément avec la position dans ce cas.
+\end_layout
+
+\begin_layout Paragraph
+Exemple de simulation où le pas de temps est trop petit :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_5_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_5_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Simulation obtenue avec les même paramètre que précédemment mais avec une
+ distance de 5 du satellite au soleil.
+ Le schéma d'intégration est leapfrog.
+\end_layout
+
+\begin_layout Standard
+Ainsi, lors d'une simulation avec de nombreuses particules et un point centrale
+ très massif (comme c'est le cas dans une galaxie ou pour le système solaire),
+ les particules situées proches du centres seront plus sensibles au pas
+ de temps.
+ Dans nos simulation, nous n'avons pas implémenté de pas de temps variable
+ selon la valeur de la force, mais cela aurait pu être un bon prolongement.
+\end_layout
+
+\begin_layout Standard
+Lors des simulation, nous tirons les particules au hasard.
+ Il se peut alors qu'une particule se trouve très proche de l'objet massif
+ et perturbe l'énergie totale du système très fortement.
+ Pour cela, nous avons imposé un périmètre d'environ 1/10 du rayon de la
+ distribution de masse sans particule.
+\end_layout
+
+\begin_layout Subsection
+Simulations obtenues :
+\end_layout
+
+\begin_layout Subsubsection
+Simulation galactique
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "bibliographie"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

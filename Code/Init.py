@@ -8,7 +8,38 @@ import sys
 import time
 import scipy.special
 import scipy.integrate
+import matplotlib.pyplot as plt
 
+
+def init_carre_random(N_part, R):
+    positions = np.zeros((N_part, 2))
+    masses = np.ones(N_part) 
+    velocities = np.zeros((N_part, 2))
+
+    for i in range (N_part):
+        positions[i] = np.array([R/2 * rnd.random() - R/2, R/2 * rnd.random() - R/2])
+
+    return positions, masses, velocities
+
+def init_syst_2_corps():
+    M_1 = 100
+    M_2 = 100
+    R = 5.
+    
+
+
+    #T = np.sqrt(a**3 * 4*np.pi**2 / (M_soleil + M_terre))
+
+    P_1 = np.array([M_2/M_1 * R/(1 + M_2/M_1),0.])
+    P_2 = np.array([M_1/M_2 * R/(1 + M_1/M_2), R])
+
+    # T_1 = 
+
+    V_soleil = np.array([2*np.pi*R/T,0.])
+    V_terre =np.array([-2*np.pi*R/T, 0.])
+ 
+
+    return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
 def init_terr_soleil():
     M_soleil = 10**4
@@ -23,13 +54,15 @@ def init_terr_soleil():
     
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
-def init_syst_soleil(N_part):
-    M_soleil = 10**1
-    R_max = 2.  
+def init_syst_soleil(N_part, R_max = 50.):
+    M_soleil = 10**6
     P_soleil = np.array([0.,0.])
     V_soleil = np.array([0.,0.])
 
-    masses = np.zeros(N_part)
+
+
+    positions = np.zeros((N_part, 2))
+    masses = np.ones(N_part) 
     velocities = np.zeros((N_part, 2))
 
     positions[0] = P_soleil
@@ -41,16 +74,90 @@ def init_syst_soleil(N_part):
     while i < N_part : 
 
         theta = rnd.random() * 2 * np.pi
-        # r = rnd.random() * R_max
-        r = np.abs(rnd.normal(0,10))
-        if r!=0 : 
+        r = rnd.random() * R_max
+        #r = np.abs(rnd.normal(0,10))
+        if r > R_max/30 + 7 : 
             positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
-            masses[i] = 1
-            velocities[i] = np.sqrt(M_soleil/np.abs(r)) *np.array([-np.sin(theta), np.cos(theta)])
+            M_tot = M_soleil + (r/R_max)**2 * N_part
+            velocities[i] = np.sqrt(M_tot/np.abs(r)) *np.array([-np.sin(theta), np.cos(theta)])
             i += 1
   
     return positions, masses, velocities
 
+def init_galaxy(N_part, R_max = 100):
+    """
+    initialisation of a galaxy with the same proportion as the milky way
+    we use a simplified density, with an exponenitial decrease
+    """
+
+    M_BH = 10**3
+    M_tot = 10**6
+    M_disk = M_tot - M_BH
+    R_max = 100.
+    h = 1
+    gamma = 10 #core radius
+    r_c = 10**3 #cut of radius
+    P_BH = np.array([0.,0.])
+    V_BH = np.array([0.,0.])
+
+
+
+    positions = np.zeros((N_part, 2))
+    masses = np.ones(N_part) * M_disk/N_part
+    velocities = np.zeros((N_part, 2))
+
+    positions[0] = P_BH
+    masses[0] = M_BH
+    velocities[0] = V_BH
+
+    plt.figure()
+    x = np.linspace(0,10,1000)
+    plt.plot(x, gamma * np.exp(-(x/r_c)**2)/(x**2 + gamma))
+
+    plt.show()
+    
+    
+    i = 1
+    while i < N_part : 
+
+        theta = rnd.random() * 2 * np.pi
+        r = -h * np.log(R_max * rnd.random()/M_tot)             #distance to the center of the galaxy
+
+        if r > R_max/10 : 
+            positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
+
+            M_int = M_BH + 2*np.pi * M_disk * (-1 + (1-r)*np.exp(-r))  #density of mass at the center
+            velocities[i] = np.sqrt(M_int/np.abs(r)) *np.array([-np.sin(theta), np.cos(theta)])      #velocity to have a circular trajectoire
+            i += 1
+  
+    return positions, masses, velocities
+
+
+def init_collision_galaxies(N_part, R_max = 300):
+
+    pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, R_max)
+
+    pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, R_max/3)
+
+    pos_2 = pos_2 + np.ones_like(pos_2) * R_max 
+
+    masses_1[0] = 10**6
+    masses_2[0] = masses_1[0] 
+
+
+    for i in range (len(vel_2)):
+        vel_2[i] = vel_2[i] + np.sqrt(np.sum(masses_1)/np.sqrt(R_max**2 * 2)) * np.array([-1., 1.])/2
+    
+    return np.concatenate((pos_1, pos_2), axis = 0), np.concatenate((masses_1, masses_2), axis = 0), np.concatenate((vel_1, vel_2), axis = 0)
+
+
+# positions, masses, velocities = init_carre_random(4000, 400)
+
+"""
+plt.figure()
+plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
+plt.show()
+"""
 
 def init_milkyWay(N_part) :
 
