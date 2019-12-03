@@ -84,6 +84,8 @@ def init_milkyWay(N_part) :
         
         masses [i] = r*Md*np.exp(-r/h)/(4*np.pi*h**2)
         
+        
+
         v = np.abs(rnd.normal(0,v_disk))
         velocities[i] = v *np.array([-np.sin(theta), np.cos(theta)])
 
