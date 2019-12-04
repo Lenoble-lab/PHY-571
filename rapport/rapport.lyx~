@@ -353,7 +353,7 @@ Valeur
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}$
+\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}[G]J$
 \end_inset
 
 
@@ -376,7 +376,7 @@ Valeur
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500$
+\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500[G]J$
 \end_inset
 
 
@@ -399,7 +399,7 @@ Moment cinétique
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316$
+\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316[G]Jm$
 \end_inset
 
 
@@ -917,6 +917,14 @@ Lors des simulation, nous tirons les particules au hasard.
  et perturbe l'énergie totale du système très fortement.
  Pour cela, nous avons imposé un périmètre d'environ 1/10 du rayon de la
  distribution de masse sans particule.
+\end_layout
+
+\begin_layout Subsection
+Simulations obtenues :
+\end_layout
+
+\begin_layout Subsubsection
+Simulation galactique
 \end_layout
 
 \begin_layout Standard

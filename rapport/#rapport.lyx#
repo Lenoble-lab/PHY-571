@@ -87,7 +87,7 @@
 \begin_body
 
 \begin_layout Title
-Rapport d'EA : résolution numérique du proglème à N-corps
+Rapport d'EA : résolution numérique du problème à N-corps
 \end_layout
 
 \begin_layout Author
@@ -96,6 +96,23 @@ Romain Lenoble - Chloé Vernière
 
 \begin_layout Section
 Introduction
+\end_layout
+
+\begin_layout Standard
+Déterminer le mouvements de N points en interaction gravitationnelle les
+ uns avec les autres est un problème physique fondamental en astronomie.
+ Des des méthodes numériques permettent de résoudre ce problème pour un
+ grand nombre de particules.
+ En particulier, l'algorithme de Barnes-Hut, que nous avons implémenté,
+ permet d'obtenir des approximations pour un temps de l'ordre de 
+\begin_inset Formula $N\log(N)$
+\end_inset
+
+ grâce à une structure , alors qu'un algorithme naïf serait en 
+\begin_inset Formula $N^{2}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -109,7 +126,7 @@ Chloé
 \end_layout
 
 \begin_layout Subsection
-Equation
+Équation
 \end_layout
 
 \begin_layout Subsection
@@ -117,7 +134,7 @@ Calcul numérique
 \end_layout
 
 \begin_layout Subsection
-Time integration
+Time intégration
 \end_layout
 
 \begin_layout Section
@@ -138,27 +155,27 @@ Nous avons codé l'algorithme dans le fichier /code du git.
 Au début (pendant les deux premières semaines), nous sommes partis en utilisant
  des classes : c'est ce qui nous semblait le plus simple au vu de la complexité
  de l’algorithme.
- Nous avons créer une classe pour les particules, une pour les nœuds de
- l'arbre et une pour l'arbre en entier.
+ Nous avons créé une classe pour les particules, une pour les nœuds de l'arbre
+ et une pour l'arbre en entier.
  La classe particule était particulièrement lourde, elle contenait la vitesse,
  la position, la masse, l'énergie, l’accélération et la force qui s'exerçait
  sur la particule notamment.
  Lorsque nous avons voulu optimiser le code en augmentant le nombre de particule
-, nous somme rapidement arrivé à des problèmes lié à cette structure : le
- code était très lent et nous étions limité en mémoire.
+, nous sommes rapidement arrivés à des problèmes liés à cette structure
+ : le code était très lent et nous étions limité en mémoire.
 \end_layout
 
 \begin_layout Standard
-Pour palier à ces problèmes, nous avons réécris le code en nous affranchissant
+Pour palier à ces problèmes, nous avons réécrit le code en nous affranchissant
  au maximum de la structure de classe et en utilisant des tableaux numpy
- qui sont beaucoup plus rapide à traiter par l'ordinateur.
+ qui sont beaucoup plus rapides à traiter par l'ordinateur.
  Dans la dernière version du code (fichier array_node), nous n'avons plus
  qu'une classe : la classe Node pour coder l'arbre.
  Le reste des données est stocké dans des tableaux où l'indice correspond
  à une particule en particulier.
- Cette nouvelle architecture a permis un gain de temps énorme (le code est
- près de 10 fois plus rapide) et nous a permis de lancer des calculs avec
- beaucoup plus de particule.
+ Cette nouvelle architecture a permis un gain de temps important, le code
+ est près de 10 fois plus rapide, et nous a permis de lancer des calculs
+ avec beaucoup plus de particules.
 \end_layout
 
 \begin_layout Standard
@@ -432,14 +449,14 @@ Comme vu dans la première partie, différents schéma d'intégrations existent.
 \end_layout
 
 \begin_layout Standard
-Nous allons comparer ici le schema d'Euler du premier ordre, le schéma leapfrog
+Nous allons comparer ici le schéma d'Euler du premier ordre, le schéma leapfrog
  et le schéma du deuxième ordre pour le même pas de temps dans la situation
  précédente.
  Le pas de temps vaut 0.007.
 \end_layout
 
 \begin_layout Paragraph
-Shéma d'Euler :
+Schéma d'Euler :
 \end_layout
 
 \begin_layout Standard
@@ -545,7 +562,7 @@ Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \begin_layout Paragraph
-Schema Leapfrog :
+Schéma Leapfrog :
 \end_layout
 
 \begin_layout Standard
@@ -759,7 +776,7 @@ Trajectoire (bleu : soleil, orange : Terre)
 \begin_layout Standard
 Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
  schéma du deuxième ordre, ce qui était attendu : schéma à l'ordre supérieur
- et symétrique ne temps.
+ et symétrique en temps.
  La trajectoire semble cependant identique.
  Pour des simulations beaucoup plus longues, nous avons remarqué que les
  deux premiers schéma conservait très mal l'énergie par rapport au dernier.
