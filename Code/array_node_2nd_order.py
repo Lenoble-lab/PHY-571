@@ -17,6 +17,11 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     vect_r = temp_node.COM - target_node.COM    # vector between nodes' centres of mass, for force calculation
     r = np.sqrt(np.sum(vect_r**2))   # distance between them
     
+    vect_v = -temp_node.velocity + target_node.velocity
+    v = np.sqrt(np.sum(vect_v**2))
+
+    prod_scal = np.sum([vect_v[i] * vect_r[i] for i in range (len(vect_r))])
+
     if r>0:
         #checking that the calculate force is valid (no division by 0)
         # if the node only has one particle or theta is small enough,
@@ -24,6 +29,8 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
         if (len(temp_node.children)==0) or (temp_node.size/r < thetamax):
             target_node.force += G * temp_node.mass * vect_r/r /(r**2 + eps**2)
             target_node.energy += -G * temp_node.mass * target_node.mass /(r + eps)
+            target_node.der_force += -G * temp_node.mass * (r**2 * vect_v - 3 * vect_r * prod_scal) / r**5
+
         else:
             # otherwise split up the node and repeat
             #not favorable case, split the node and repeat
@@ -34,7 +41,7 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
 
 
 class Node:
-    def __init__(self, center, size, masses, positions, ids, leaves=[]):
+    def __init__(self, center, size, masses, positions, velocities, ids, leaves=[]):
     
         """
         take as parameter the list (np.array) of masses, positions and ids of the particules
@@ -51,87 +58,83 @@ class Node:
             # if there is one point, then the node is a real particule
             leaves.append(self)
             self.COM = positions[0]
+            self.velocity = velocities[0]
             self.mass = masses[0]
             self.id = ids[0]
             self.force = np.zeros(2)        # at each point, we initailise the gravitational field
             self.energy = 0                  #and the enrgy potential
             self.der_force = 0          #for second order integration shema
         else:
-            self.GenerateChildren(positions, masses, ids, leaves)     # if we have at least 2 points in the node, we generate the children
+            self.GenerateChildren(positions, masses, velocities, ids, leaves)     # if we have at least 2 points in the node, we generate the children
                                                              
             # updating the COM and mass of each node, we will calculate recursively on the node's children
             com_total = np.zeros(2) # running total for mass moments to get COM
+            v_total = np.zeros(2)
             m_total = 0.            # running total for masses
             for c in self.children:
                 m, com = c.mass, c.COM
                 m_total += m
                 com_total += com * m   # add the moments of each child
+                v_total += c.velocity * m
             self.mass = m_total
             self.COM = com_total / self.mass  
- 
-    def GenerateChildren(self, positions, masses, ids, leaves):
+            self.velocity = v_total / self.mass
+
+    def GenerateChildren(self, positions, masses, velocities, ids, leaves):
         """Generates the node's children"""
-        tree_pos = (positions > self.center)  #does all comparisons needed to determine points' octants
+        tree_pos = (positions > self.center)  #does all comparisons needed to determine points' cadran
         
-        for i in range(2): #looping over the 8 octants
+        for i in range(2): 
             for j in range(2):
 
                 in_tree = np.all(tree_pos == np.bool_([i,j]), axis=1)
                 if not np.any(in_tree): continue           # if no particles, don't make a node
                 dx = 0.5*self.size*(np.array([i,j])-0.5)   # offset between parent and child box centers
+
                 self.children.append(Node(self.center+dx,
                                                 self.size/2,
                                                 masses[in_tree],
                                                 positions[in_tree],
+                                                velocities[in_tree],
                                                 ids[in_tree],
                                                 leaves))
 
 @jit
-def GravAccel(positions, masses, sec_order = False, thetamax=0.7, G=1.):
+def GravAccel(positions, masses, velocities, thetamax=0.7, G=1.):
     center = (np.max(positions,axis=0)+np.min(positions,axis=0))/2       #center of bounding box is the mean of the max and min particule
     topsize = np.max(np.max(positions,axis=0)-np.min(positions,axis=0))  #size of bounding box
     leaves = []  # want to keep track of leaf nodes
-    topnode = Node(center, topsize, masses, positions, np.arange(len(masses)), leaves) #build the tree
+    topnode = Node(center, topsize, masses, positions, velocities, np.arange(len(masses)), leaves) #build the tree
     
-    """
-    if sec_order : der_force = np.empty_like(positions)
-    """
+   
     force = np.empty_like(positions)
     energy = np.empty_like(positions)
-    
+    der_force = np.empty_like(positions)
 
     for i,leaf in enumerate(leaves):
         calculate_force(topnode, leaf, thetamax, G)  # update energy and force of every particules
         force[leaf.id] = leaf.force  # store force and accéleration in order to update the velocity and the position later
         energy[leaf.id] = leaf.energy
-        if sec_order : der_force[leaf.id] = leaf.der_force
+        der_force[leaf.id] = leaf.der_force
     
-    if sec_order : return force, energy, der_force
-    return force, energy
+    return force, energy, der_force
+ 
     
 
 
-def step_1st_order(positions, masses, velocities, delta_t):
+def step_2nd_order(positions, masses, velocities, delta_t):
     """
     put it together : update the tree, calculate the force/energy and finaly update position/velocity with a first order shema
     """
-    force, energy = GravAccel(positions, masses)
-    N_points = len(positions)
+    force, energy, der_force = GravAccel(positions, masses, velocities)
 
-    velocities += delta_t * force
-    positions += delta_t * velocities
+    positions += velocities* delta_t + 0.5 * force*delta_t**2 + 1/6 * der_force * delta_t**3 
+    velocities += force * delta_t + 1/2 * der_force * delta_t**2 
+
     return positions, velocities, np.sum(energy)
 
-def step_leap_frog(positions, masses, velocities, force_i, delta_t):
-    """
-    put it together : update the tree, calculate the force/energy and finaly update position/velocity with a leapfrog shema
-    """
-    
-    force, energy = GravAccel(positions, masses)
-    N_points = len(positions)
-    velocities += 0.5*(force_i + force) * delta_t 
-    positions += velocities * delta_t + 0.5*force_i * delta_t**2
-    return positions, velocities, force, np.sum(energy)
+
+
 
 
 sys.setrecursionlimit(10**5) 
@@ -142,8 +145,8 @@ t = time.clock()
 
 fig = plt.figure()
 
-positions, masses, velocities = init_terr_soleil()
-N_cycle = 1500
+positions, masses, velocities = init_syst_soleil(50)
+N_cycle = 1000
 N_part = len(positions)
 
 pos = np.zeros((N_cycle+1, N_part, 2))
@@ -183,7 +186,7 @@ for i in range (40):
 
 print(time.clock()-t)
 """
-force, energy = GravAccel(positions, masses)
+force, energy , der_force= GravAccel(positions, masses, velocities)
 
 def make_frame(i):
     if i % 10 == 0:
@@ -192,8 +195,7 @@ def make_frame(i):
     global velocities
     global force
     
-    positions, velocities, force, energy_pot_t = step(positions, masses, velocities, force, 0.005)
-    # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
+    positions, velocities, energy_pot_t = step_2nd_order(positions, masses, velocities, 0.005)
 
     pos [i+1] = positions
     energy_pot[i] = energy_pot_t/2
@@ -216,10 +218,10 @@ def make_frame(i):
 
     return (line,  line_ene_tot, line_ene_cin, line_ene_pot, line_mom)
 
-#ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
+# ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
 #ani.save("1000_part_0.005_deltat_0.005_gaussian.mp4")
 print(time.clock() - t, 'temps')
-#plt.show()
+# plt.show()
 
 def calcul(N_cycle):
     global positions
@@ -228,9 +230,8 @@ def calcul(N_cycle):
     for i in range (N_cycle):
         if i % 100 == 0:
             print (i, ' t ')
-        
-        positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.007)
-        # positions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.007)
+
+        positions, velocities, energy_pot_t = step_2nd_order(positions, masses, velocities, 0.007)
 
         pos [i+1] = positions
         energy_pot[i] = energy_pot_t/2
@@ -240,14 +241,14 @@ t = time.clock()
 calcul(N_cycle)
 print(time.clock()-t)
 
-name = "trace_terre_soleil_0.007_leapfrog"
+name = "trace_terre_soleil_0.007_2nd_order"
 
 plt.figure()
 plt.title("Trajectoire du système")
 for i in range (N_part):
     plt.plot(pos[:,i,0], pos[:,i,1], 'o', markersize = 1)
 plt.axis('equal')
-plt.savefig("../rapport/" + name + "_trajectoire.jpg")
+# plt.savefig("../rapport/" + name + "_trajectoire.jpg")
 
 plt.figure()
 plt.title("energie et moment cinétique")
@@ -257,6 +258,6 @@ plt.plot(range(0, N_cycle), energy_cin + energy_pot , 'g', label = 'energy total
 plt.plot(range(0,N_cycle), cintetic_momentum, 'black', label = 'cinetic momentum', lw = 2)
 plt.legend()
 #plt.axis('equal')
-plt.savefig("../rapport/" + name + "_energy.jpg")
+# plt.savefig("../rapport/" + name + "_energy.jpg")
 plt.show()
 

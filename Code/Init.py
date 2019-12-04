@@ -1,5 +1,4 @@
-from Tree import *
-from simulation import *
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -44,7 +43,7 @@ def init_syst_2_corps():
 def init_terr_soleil():
     M_soleil = 10**4
     M_terre = 1
-    R = 10.
+    R = 5.
     
     P_soleil = np.array([0.,0.])
     P_terre = np.array([0., R])
