@@ -923,6 +923,8 @@ Lors des simulation, nous tirons les particules au hasard.
 Simulations obtenues :
 \end_layout
 
+<<<<<<< HEAD
+=======
 \begin_layout Standard
 A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
  calculs avec un grand nombre de particules (plusieurs milliers).
@@ -940,10 +942,13 @@ literal "false"
  une galaxie.
 \end_layout
 
+>>>>>>> 284409f56504d1a7e3b26cc3c904984f1b5f4abe
 \begin_layout Subsubsection
 Simulation galactique
 \end_layout
 
+<<<<<<< HEAD
+=======
 \begin_layout Standard
 La simulation d'une galaxie dépend énormément des conditions initiales :
  masse de trou noir, distribution de masse et de vitesse.
@@ -962,6 +967,7 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 
 \end_layout
 
+>>>>>>> 284409f56504d1a7e3b26cc3c904984f1b5f4abe
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
