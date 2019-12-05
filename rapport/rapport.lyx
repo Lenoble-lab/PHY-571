@@ -1,0 +1,1995 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{fancyhdr}
+\usepackage{eurosym}
+
+\pagestyle{fancy}
+
+\fancyhead[L]{}
+
+\renewcommand{\footrulewidth}{0.1pt}
+
+
+\fancyfoot[L]{
+\includegraphics[scale=0.5]{logo_poly.jpg}
+}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Rapport d'EA : résolution numérique du problème à N-corps
+\end_layout
+
+\begin_layout Author
+Romain Lenoble - Chloé Vernière
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Déterminer le mouvements de N points en interaction gravitationnelle les
+ uns avec les autres est un problème physique fondamental en astronomie.
+ Des des méthodes numériques permettent de résoudre ce problème pour un
+ grand nombre de particules.
+ En particulier, l'algorithme de Barnes-Hut, que nous avons implémenté,
+ permet, moyennant quelques approximations quantifiables, d'obtenir une
+ complexité de 
+\begin_inset Formula $N\log(N)$
+\end_inset
+
+ grâce à une structure en arbre récursive, alors qu'un algorithme exact
+ serait en 
+\begin_inset Formula $O(N^{2})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Dans un premier temps, nous allons présenter la méthode générale employée
+ pour résoudre ce problème.
+ Puis dans un second temps, nous reviendrons sur les résultats que nous
+ avons obtenus.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Méthodes pour résoudre le problème à N-corps
+\end_layout
+
+\begin_layout Subsection
+Équation
+\end_layout
+
+\begin_layout Standard
+Dans un problème gravitationnel à N corps, chaque point i de masse 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+est soumis à une force gravitationnelle et donc à un potentiel gravitationnel
+ par tous les autres points 
+\begin_inset Formula $j$
+\end_inset
+
+ tels que :
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $F_{j\rightarrow i}=-G*\frac{m_{i}*m_{j}}{|\vec{r_{j}}-\vec{r}_{i}|^{3}}*(\vec{r_{j}}-\vec{r_{i}})$
+\end_inset
+
+ où 
+\begin_inset Formula $G=6,67.10^{-11}m^{3}.kg^{-1}.t^{-2}$
+\end_inset
+
+ est la constante gravitationnelle, 
+\begin_inset Formula $r_{i}$
+\end_inset
+
+ et 
+\begin_inset Formula $r_{j}$
+\end_inset
+
+les positions des masses 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+et 
+\begin_inset Formula $m_{j}$
+\end_inset
+
+ ;
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $E_{ji}=-G*\frac{m_{i}*m_{j}}{(r_{j}-r_{i})}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cependant, un important problème des simulations à N-corps arrive lorsque
+ deux objets se trouvent très proches.
+ La trajectoire de chaque particule n'est alors pas une conique classique
+ comme dans le problème à deux corps.
+ Lorsque la distance qu'une particule parcourt en une seule itération dépasse
+ la distance entre elle-même et une autre particule, une collision s'est
+ produite.
+ Ce genre d’évènement peut alors modifier énormément l'énergie cinétique
+ totale : c'est ce phénomène qui se passe lorsque des particules sont éjectées
+ très violemment et sortent du potentiel d'attraction de la galaxie dans
+ les simulations.
+ Une solution pour limiter ce problème est d’implanter une force modifiée
+ à courte portée, de sorte que la force de gravitation soit réduite à courte
+ distance.
+ Cela peut se traduite par l'ajout d'un paramètre d'atténuation que l'on
+ a choisit 
+\begin_inset Formula $\epsilon=5$
+\end_inset
+
+USI.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "galaxysimulation"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pour chaque point i, on a : 
+\begin_inset Formula 
+\begin{equation}
+m_{i}*\ddot{r_{i}}=-G*m_{i}\sum\frac{m_{j}}{|\vec{r_{j}-}\vec{r_{i}|{}^{2}+\epsilon^{2}}}*\frac{(\vec{r_{j}-}\vec{r_{i})}}{|\vec{r_{j}-}\vec{r_{i}|}}\label{eq:du mouvement}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Calcul numérique
+\end_layout
+
+\begin_layout Standard
+L'algorithme de Barnes-Hut 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "barnshutalgortihm"
+literal "false"
+
+\end_inset
+
+ permet de résoudre les N équations du mouvement associées aux 
+\begin_inset Formula $N(N-1)$
+\end_inset
+
+ interactions en un temps en 
+\begin_inset Formula $O(N\log N)$
+\end_inset
+
+ au lieu de 
+\begin_inset Formula $O(N^{2})$
+\end_inset
+
+, moyennant des approximations contrôlables.
+ Il repose sur un arbre hiérarchique dans lequel sont placés les points
+ du système.
+ Il fonctionne de la manière suivante : le plan contenant les centres de
+ masse est divisé en quatre quadrants, qui sont représentés chacun par une
+ branche de l'arbre.
+ Chaque quadrant est ensuite divisé en quatre tant qu'il renferme strictement
+ plus d'une particule.
+ Un arbre résultant avec 1000 particules est présenté en figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Illustration de l'arbre"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Plus les particules sont réparties de façon non homogène dans l'espace,
+ plus l'arbre est donc profond, car il faut plus diviser l'espace pour isoler
+ les particules.
+ L'apport de l'algorithme pour le calcul d'une force d'interaction exercée
+ sur une particule est de ne considérer que le centre de masse du quadrant
+ considéré si la taille de celui-ci est plus grande que la distance entre
+ la particule et le centre de masse multiplié par un certain angle 
+\begin_inset Formula $\theta.$
+\end_inset
+
+ Nous avons pris 
+\begin_inset Formula $\theta=0.7$
+\end_inset
+
+ conformément à la littérature.
+ Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
+ seule l'interaction avec le centre de masse du groupe de particules sera
+ calculée, au lieu de la calculer avec chacune des particules du groupe
+ :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Si\frac{l}{d}\leq\theta,\sum F_{j\rightarrow i}=F_{COM\rightarrow i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Les feuilles externes de l'arbre contiennent ainsi au plus une particule
+ tandis que les nœuds internes contiennent les information des centres de
+ masse de leurs enfants.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Quadtree_illustration.png
+	scale 60
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "Illustration de l'arbre"
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Illustration de la division du plan selon l'algorithme de Barnes-Hut avec
+ 1000 particules
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La hauteur h de l'arbre ainsi construit est en 
+\begin_inset Formula $O(ln(N))$
+\end_inset
+
+.
+ En effet, soit une feuille externe contenant une particule.
+ En moyenne, pour une répartition homogène des particules, elle contient
+ 
+\begin_inset Formula $\frac{N}{4^{h}}$
+\end_inset
+
+ particules.
+ Donc : 
+\begin_inset Formula 
+\[
+1=\frac{N}{4^{h}}\Rightarrow h=O(ln(N))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lors du calcul de la force exercée sur sur une particule, l'arbre est parcouru
+ en profondeur jusqu'à remplir le critère d'approximation ou tomber sur
+ une feuille externe.
+ Comme il y a N particules pour une profondeur moyenne de l'arbre en 
+\begin_inset Formula $O(ln(N))$
+\end_inset
+
+, le calcul de l'ensemble des forces s'effectue donc en 
+\begin_inset Formula $O(Nln(N)).$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Intégration temporelle
+\end_layout
+
+\begin_layout Standard
+Une fois l'arbre construit et les interactions entre les N particules calculées,
+ il suffit d'intégrer 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:du mouvement"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ pour chaque particule afin d'obtenir sa nouvelle position.
+ Pour ce faire, nous avons utilisé plusieurs schémas d'intégration d'ordre
+ différents, même si la force modifiée permet une plus grande liberté sur
+ le pas de temps.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "articleN-bodycours"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dans la suite, nous notons 
+\begin_inset Formula $v_{i}(t)$
+\end_inset
+
+ la vitesse de la particule au temps t, 
+\begin_inset Formula $r_{i}(t)$
+\end_inset
+
+ la position de la particule en t, 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ le pas de temps et 
+\begin_inset Formula $a_{i}(t)$
+\end_inset
+
+ l'accélération en t.
+\end_layout
+
+\begin_layout Itemize
+Tout d'abord, un schéma d'intégration naïf au premier ordre (ou schéma d'Euler)
+ : 
+\begin_inset Formula 
+\[
+v_{i}(t+\Delta t)=\ddot{r_{i}}(t)*\Delta t
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{i}(t+\Delta t)=v_{i}(t)*\Delta t
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ce schéma au premier ordre est le plus simple qu'il existe, mais ses erreurs
+ sont assez importantes, notamment pour la conservation de l'énergie.
+\end_layout
+
+\begin_layout Itemize
+Puis la méthode Leapfrog au second ordre : 
+\begin_inset Formula 
+\[
+v_{i}(t+\Delta t)=v_{i}(t)+\frac{a_{i}(t)+a_{i}(t+\Delta t)}{2}*\Delta t
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{i}(t+\Delta t)=r_{i}(t)+v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Nous avons beaucoup utilisé cette intégrateur car il était très rapide,
+ tout en permettant une bonne conservation de l'énergie.
+\end_layout
+
+\begin_layout Itemize
+Enfin un schéma de Hermite au quatrième ordre : 
+\begin_inset Formula 
+\[
+v_{i}(t+\Delta t)=a_{i}(t)*\Delta t+\frac{1}{2}\dot{a_{i}}(t)*\Delta t^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{i}(t+\Delta t)=v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}+\frac{1}{6}\dot{a_{i}}(t)*\Delta t^{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+où 
+\begin_inset Formula $\dot{a_{i}}=-G\underset{j\neq i}{\sum}m_{j}\frac{x_{ij}^{2}\dot{x_{ij}}-3x_{ij}(\dot{x_{ij}}.x_{ij})}{|x_{ij}|^{5}}$
+\end_inset
+
+ correspond à la la dérivée de l'accélération
+\end_layout
+
+\begin_layout Standard
+Cet intégrateur est le plus précis que nous ayons utilisé.
+ Ces équations sont symétriques en temps et donnent une excellente conservation
+ de l'énergie.
+ Il nécessite cependant de passer par un schéma implicite qui nécessite
+ de calculer la dérivée de la force, ce qui a un cout de calcul non négligeable.
+\end_layout
+
+\begin_layout Standard
+Pour la stabilité de chacun des schémas, nous avons choisi pour un pas de
+ temps constant.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Simulations réalisées
+\end_layout
+
+\begin_layout Standard
+Nous avons codé l'algorithme dans le fichier /code du git.
+\end_layout
+
+\begin_layout Standard
+Pendant les deux premières semaines du projet, nous avons construit notre
+ code autour de différentes classes : c'est ce qui nous semblait le plus
+ simple au vu de la complexité de l’algorithme.
+ Nous avons ainsi créé une classe pour les particules, une pour les nœuds
+ de l'arbre et une pour l'arbre en entier.
+ La classe particule était particulièrement lourde car elle contenait la
+ vitesse, la position, la masse, l'énergie, l’accélération et la force qui
+ s'exerçait sur la particule notamment.
+ Lorsque nous avons voulu optimiser le code en augmentant le nombre de particule
+s, nous sommes rapidement arrivés à des problèmes liés à cette structure
+ : le code était très lent et nous étions limités en mémoire.
+ De plus, les outils vectoriels de Numpy n'étaient pas utilisables avec
+ une telle architecture.
+\end_layout
+
+\begin_layout Standard
+Pour palier à ces problèmes, nous avons réécrit le code en nous affranchissant
+ au maximum de la structure de classe et en utilisant des tableaux numpy
+ qui sont beaucoup plus rapides à traiter par l'ordinateur.
+ Dans la dernière version du code (fichier array_node), nous n'avons plus
+ qu'une classe : la classe Node pour coder l'arbre.
+ Le reste des données est stocké dans des tableaux où l'indice correspond
+ à une particule en particulier.
+ Cette nouvelle architecture a permis un gain de temps important, le code
+ est près de 10 fois plus rapide, et nous a permis de lancer des calculs
+ avec beaucoup plus de particules.
+\end_layout
+
+\begin_layout Standard
+Les calculs restent tout de même très gourmands en temps, même sur les ordinateu
+rs des salles d'informatique qui étaient environ dix fois plus rapides que
+ nos ordinateurs personnels.
+ Nous avons essayé d'optimiser la rapidité du code avec du multiprocessing
+ mais l'architecture du code est assez complexe et nécessite d'avoir accès
+ à la même information en même temps par tout les processeurs.
+ La partie la plus chronophage du code est le calcul des interactions à
+ chaque pas de temps entre toutes les particules (en 
+\begin_inset Formula $O(Nlog(N))$
+\end_inset
+
+).
+ Pour chaque particule, nous calculions les interactions avec ses voisines
+ selon la descente de l'arbre, comme expliqué plus haut.
+ C'est ici que nous aurions voulu utiliser du multiprocessing pour que chaque
+ force soit calculée en même temps mais chaque calcul nécessitait l'accès
+ aux mêmes données, ce qui ne facilitait pas cette pratique.
+\end_layout
+
+\begin_layout Standard
+Nous avons uniquement fait des modélisation en 2D mais le code est très
+ facilement extensible à la troisième dimension : il suffit d'ajouter une
+ dernière dimension dans le choix du huitième de cube dans lequel appartient
+ chaque particule au moment de la descente de l'arbre.
+ Nous avons également toujours pris la constante gravitationnelle G=1.
+ Toute les autres unités sont redéfinie par rapport à cette valeur.
+\end_layout
+
+\begin_layout Subsection
+Vérification de la validité de l'algorithme
+\end_layout
+
+\begin_layout Standard
+Premièrement, nous avons vérifié si notre algorithme avait une bonne précision.
+ Pour cela, nous avons utilisé le problème à deux corps dont la solution
+ analytique est connue.
+ Nous avons notamment simulé un système Terre-Soleil où l'un des deux corps
+ a une masse bien supérieure à l'autre.
+\end_layout
+
+\begin_layout Standard
+Voilà les résultats obtenus avec ce système, avec les conditions initiales
+ du mouvement circulaire uniforme (vitesse nulle pour le soleil et 
+\begin_inset Formula $v=\sqrt{G\frac{M}{R}}$
+\end_inset
+
+ pour la Terre), un rapport
+\begin_inset Formula $10^{4}$
+\end_inset
+
+ entre les masses (la masse de l'objet central vaut
+\begin_inset Formula $10^{4}$
+\end_inset
+
+celle du satellite) et une distance R=1 entre les deux particules :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename graph_terre_soleil_0.002.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.002.jpg
+	lyxscale 40
+	scale 25
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dans cette simulation, nous avons utilisé un pas de temps de 
+\begin_inset Formula $\Delta t=$
+\end_inset
+
+0.002 et un schéma d'intégration du premier ordre (d'Euler).
+ On obtient bien une trajectoire circulaire et l'énergie est bien conservée.
+ On peut vérifier les valeurs obtenues par le calcul.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Grandeur
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Valeur
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Énergie potentielle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E_{g}=-2G\frac{Mm}{R}=-2.10^{3}[G]J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Énergie cinétique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E_{c}=\frac{1}{2}mv^{2}=\frac{GMm}{2R}=500[G]J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Moment cinétique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M=|\vec{p}\wedge\vec{r}|=mvR=316[G]Jm$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ainsi, l’algorithme est fiable est donne des résultats cohérents pour le
+ système à deux corps.
+\end_layout
+
+\begin_layout Subsection
+Étude des différents schéma d'intégration et des pas de temps
+\end_layout
+
+\begin_layout Standard
+Comme présenté dans la première partie, différents schéma d'intégrations
+ permettent d'intégrer les équations.
+ Ils donnent des résultats différents selon le pas de temps choisi.
+ La principale différence observée est sur la conservation de l'énergie.
+\end_layout
+
+\begin_layout Standard
+Nous allons comparer ici le schéma d'Euler du premier ordre, le schéma leapfrog
+ (deuxième ordre) et le schéma de Hermite (quatrième ordre) pour le même
+ pas de temps dans la situation précédente.
+ Le pas de temps vaut 0.007.
+\end_layout
+
+\begin_layout Paragraph
+Schéma d'Euler :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_euler_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_euler_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Schéma Leapfrog :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Intégrateur de Hermite développé au 2ème ordre :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_2nd_order_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_2nd_order_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
+ schéma du quatrième ordre, ce qui était attendu : c'est le schéma à l'ordre
+ le plus élevé et symétrique en temps.
+ La trajectoire semble cependant identique.
+ Pour des simulations beaucoup plus longues, nous avons remarqué que les
+ deux premiers schémas présentaient une plus mauvaise conservation de l'énergie
+ et étaient très dépendant du pas de temps.
+ Cependant, le schéma de Hermite au 4ème ordre nécessite de calculer de
+ taux de variation de l'accélération.
+ Ce calcul est coûteux, ce qui rend le code utilisant le schéma de Hermite
+ près de 3 fois plus lent que le schéma de Leapfrog.
+ C'est pour cela que nous avons utilisé ce dernier pour la suite de nos
+ simulations.
+\end_layout
+
+\begin_layout Standard
+On ne peut toutefois pas déduire de tels calcul le pas minimal qu'il faut
+ adopter pour une simulation.
+ En effet, le pas de temps est uniquement utilisé pour déduire l'accélération
+ et la vitesse à partir de la force calculée.
+ Si la force est très importante, alors l'accélération le sera aussi et
+ la vitesse variera beaucoup.
+ Le pas de temps devra alors être assez faible pour conserver l'énergie.
+ Cette situation est observée lorsque le satellite se rapproche du soleil.
+ La force varie de plus considérablement avec la position dans ce cas.
+\end_layout
+
+\begin_layout Paragraph
+Exemple de simulation avec un pas de temps trop grand :
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_5_energy.jpg
+	lyxscale 40
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename trace_terre_soleil_0.007_leapfrog_5_trajectoire.jpg
+	lyxscale 40
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Trajectoire (bleu : soleil, orange : Terre)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Simulation obtenue avec les mêmes paramètres que précédemment mais avec
+ une distance de R = 5 du satellite au soleil.
+ Le schéma d'intégration est celui de Leapfrog.
+\end_layout
+
+\begin_layout Standard
+Ainsi, lors d'une simulation avec de nombreuses particules et un point central
+ très massif (comme c'est le cas dans une galaxie ou pour le système solaire),
+ les particules situées proches du centre seront plus sensibles au pas de
+ temps.
+ Dans nos simulation, nous n'avons pas implémenté de pas de temps variable
+ selon la valeur de la force, mais cela aurait pu être un bon prolongement.
+\end_layout
+
+\begin_layout Standard
+Lors des simulation, nous tirons les particules au hasard.
+ Il se peut alors qu'une particule se trouve très proche de l'objet massif
+ et perturbe l'énergie totale du système très fortement.
+ Pour cela, nous avons imposé un périmètre d'environ 1/10 du rayon de la
+ distribution de masse sans particule.
+\end_layout
+
+\begin_layout Subsection
+Simulations obtenues :
+\end_layout
+
+\begin_layout Standard
+A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
+ calculs avec un grand nombre de particules (jusqu'à plusieurs milliers).
+ Ces calculs mettaient plusieurs heures à tourner.
+ Nous avions comme objectif d'obtenir des simulations similaires à 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+.
+ Pour cela, il nous fallait tout d'abord une simulation viable pour modéliser
+ une galaxie.
+\end_layout
+
+\begin_layout Standard
+Dans toute nos simulation, nous avons pris 
+\begin_inset Formula $\theta=0.7$
+\end_inset
+
+, qui était la valeur utilisée dans 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+.
+ Une valeur plus grande permettait de meilleur calcul mais la conservation
+ de l'énergie potentielle n'était pas très bonne.
+\end_layout
+
+\begin_layout Standard
+Le schéma d'intégration choisi est le schéma Leapfrog qui a l'avantage d'être
+ beaucoup plus rapide que le schéma hermitien et d'être stable.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation galactique
+\end_layout
+
+\begin_layout Standard
+La simulation d'une galaxie dépend énormément des conditions initiales :
+ masse de trou noir, distribution de masse et de vitesse.
+\end_layout
+
+\begin_layout Standard
+Pour commencer, nous avons pris une distribution de masse proportionnelle
+ à 
+\begin_inset Formula $\frac{1}{r}$
+\end_inset
+
+ et un vitesse pour chaque particule égale à 
+\begin_inset Formula $v(r)=\sqrt{G\frac{M(\leq r)}{R}}$
+\end_inset
+
+.
+ Cette vitesse assure une stabilité et évite que les particules s'effondrent
+ au centre ou se libèrent du potentiel central.
+ Nous nous attendons à voir les inhomogénéités de densité liées à l'initialisati
+on augmenter jusqu'à former des filaments, à l'image des simulations cosmologiqu
+es actuelles.
+ Cependant, notre simulation est très simpliste et ne prend prend en compte
+ que la gravitation : pas de noyau actif de galaxies, de supernovae ou d'équatio
+ns de mécanique des fluides.
+ Ces phénomènes modifient énormément la morphologie des galaxies.
+ Pour toutes ces raisons, notre modèle n'est pas très réaliste.
+\end_layout
+
+\begin_layout Standard
+Enfin, notre modèle ne représente pas non plus tout un proto-système solaire
+ car nous n'avons pas mis en place de processus d’accrétion entre les particules.
+ Il ne prend pas en compte les collisions entre corps.
+ Cette approximation est justifiée pour la modélisation d'une galaxie où
+ les collisions entre étoiles sont très rares car les distances sont très
+ grandes.
+ En revanche, les planètes du système solaire se sont formées par accrétion
+ successive de corps plus petits, les collisions étaient alors très fréquentes.
+\end_layout
+
+\begin_layout Standard
+La simulation ci-dessus est la plus grande que nous ayons faite pour une
+ galaxie seule.
+ Elle inclue 4000 particules réparties aléatoirement suivant une distribution
+ en 
+\begin_inset Formula $\frac{1}{r}$
+\end_inset
+
+.
+ Le pas de temps vaut 0.008 et il y a 10000 itérations.
+ La masse du trou noir central vaut 
+\begin_inset Formula $10^{3}[G]kg$
+\end_inset
+
+ et celle des particules élémentaire 
+\begin_inset Formula $1[G]kg$
+\end_inset
+
+.
+ Elle a été calculée sur les ordinateurs de l'X et a mis près de 10h à calculer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename système_solaire/Capture.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État initial
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename système_solaire/Capture_1.JPG
+	lyxscale 30
+	scale 20
+	BoundingBox 0bp 0bp 1171bp 850bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État après 4000 itérations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename système_solaire/Capture_2.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État final (après 10000 itérations)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename système_solaire/energy_syst_solaire.jpg
+	lyxscale 50
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Sur ces quelques images, on remarque que à partir d'une distribution aléatoire,
+ on observe rapidement l'émergence de grandes structures filamentaires,
+ à l'image des bras observés sur la majorité des galaxies.
+ L'énergie n'est pas conservée, ce qui est lié au schéma d'intégration.
+\end_layout
+
+\begin_layout Standard
+En nous inspirant de 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "galaxysimulation"
+literal "false"
+
+\end_inset
+
+, nous avons en fin de projet tenté de complexifier le modèle en simulant
+ une galaxie composée d'un disque, d'un halos et d'un bulbe galactique.
+ Les particules de ces différentes entités ont alors des positions, des
+ densités et des vitesses initiales différentes.
+ La simulation conduite plus haut est une simplification de celle-ci dans
+ la mesure où toutes les particules sont du même type et que la densité
+ de masse et la vitesse initiale suivent un modèle simple.
+ Cependant, en dépit de nombreuses heures passées dessus, cette simulation
+ n'a pas pu voir le jour car les modèles de vitesse présentés dans l'article
+ ne pouvaient pas être déduits et calculés simplement.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation de collision entre galaxies
+\end_layout
+
+\begin_layout Standard
+Pour reprendre la simulation de 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+, nous avons utilisé la même initialisation que précédemment.
+ Nous avons ajouté une deuxième galaxie en orbite autour de la première
+ et nous avons observé les effets que cela produisait.
+ Nous avons obtenu de belles simulations, que l'on peut retrouver dans le
+ dossier /result du git.
+\end_layout
+
+\begin_layout Standard
+La simulation ci dessous correspond à ce genre de collision.
+ Il y a 4000 particules et 10000 itérations.
+ Le pas de temps vaut 0.008.
+ La masse des deux trous noir vaut 
+\begin_inset Formula $10^{6}$
+\end_inset
+
+, le reste des particules a une masse de 1.
+ Dans le référentiel des deux galaxies, chaque particule a une vitesse 
+\begin_inset Formula $v(r)=\sqrt{G\frac{M(\leq r)}{R}}$
+\end_inset
+
+ assurant la stabilité de l'ensemble.
+ Nous avons ajouté une vitesse de dérive de la petite galaxie : 
+\begin_inset Formula $v_{der}=\sqrt{G\frac{2M(\leq r)}{R}}$
+\end_inset
+
+ , supérieure à la vitesse de libération, ce qui fait que la deuxième galaxie
+ n'est pas liée à la première.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename collision_galaxies/Capture_1.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État initial
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename collision_galaxies/Capture_2.JPG
+	lyxscale 30
+	scale 20
+	BoundingBox 0bp 0bp 1177bp 879bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État après 3000 itérations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename collision_galaxies/Capture_3.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État final (après 8000 itérations)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename collision_galaxies/collision_energy.jpg
+	lyxscale 40
+	scale 32
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cette simulation ne conserve pas l'énergie : le pas de temps de 0.008 est
+ trop grand.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+Finalement, l'algorithme de Barn-Hut nous a permis de faire des simulations
+ à N-corps à plusieurs milliers de particules.
+ Cette algorithme rapide et optimisé permet de faire une infinité de simulations
+ différentes selon les conditions initiales.
+ Dans cette étude, nous avons étudié l'évolution d'un ensemble de particules,
+ simulant une galaxie et la collision entre deux galaxies.
+ Malgré sa simplicité à l'heure des super-calculateurs, il permet de rendre
+ compte plutôt fidèlement de quelques phénomènes de l'évolution cosmologique.
+\end_layout
+
+\begin_layout Standard
+Cependant, notre simulation pourrait être amélioré en implémentant différents
+ comportements comme la collision et l'accrétion de matière pour le système
+ solaire ou encore la dynamique des fluides pour les gaz galactiques.
+ L'algorithme pourrait quant à lui être amélioré en prenant un pas de temps
+ adapté à chaque particule ou en implémentant la méthode Fast Multipole
+ dont la complexité est en 
+\begin_inset Formula $O(N)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "bibliographie"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
