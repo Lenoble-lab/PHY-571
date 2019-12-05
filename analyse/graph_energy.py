@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 
-
+#creaion of the figure for the energies
 
 data = []
 
