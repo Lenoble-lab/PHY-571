@@ -258,9 +258,9 @@ Nous avons pris
 
 conformémant à la littérature.
  Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
- seule l'interaction avec le centre de masses du groupe de particules sera
- calculé, au lieu de calculer chaque force d'interaction avec les particules
- du groupe : 
+ seule l'interaction avec le centre de masse du groupe de particules sera
+ calculée, au lieu de la calculer avec chacune des particules du groupe
+ : 
 \end_layout
 
 \begin_layout Standard
@@ -1277,7 +1277,7 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 
 .
  Cette vitesse assure une stabilité et évite que les particules s'effondrent
- au centre ou se libère du potentiel central.
+ au centre ou se libèrent du potentiel central.
  Nous nous attendons à voir les inhomogénéité de densité lié à l'initialisation
  augmenter jusqu'à former des filaments, à l'image des simulations cosmologiques
  actuelle.
