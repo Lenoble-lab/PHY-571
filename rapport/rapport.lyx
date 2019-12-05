@@ -1960,14 +1960,21 @@ Finalement, l'algorithme de Barn-Hut nous a permis de faire des simulations
  différentes selon les conditions initiales.
  Dans cette étude, nous avons étudié l'évolution d'un ensemble de particules,
  simulant une galaxie et la collision entre deux galaxies.
- Malgré sa simplicité à l'heure des super calculateur, il permet de rendre
- compte de quelques phénomène de l'évolution cosmologique.
+ Malgré sa simplicité à l'heure des super-calculateurs, il permet de rendre
+ compte plutôt fidèlement de quelques phénomènes de l'évolution cosmologique.
 \end_layout
 
 \begin_layout Standard
-Cependant, notre algorithme pourrait être amélioré en implémentant différents
- comportements : collision et accrétion de matière pour le système solaire,
- dynamique des fluides pour les gaz galactiques.
+Cependant, notre simulation pourrait être amélioré en implémentant différents
+ comportements comme la collision et accrétion de matière pour le système
+ solaire ou encore la dynamique des fluides pour les gaz galactiques.
+ L'algorithme pourrait quant à lui être amélioré en adaptant les pas de
+ temps dans la mesure du possible ou en implémentant la méthode Fast Multipole
+ dont la complexité est en 
+\begin_inset Formula $O(N)$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
