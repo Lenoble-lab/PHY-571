@@ -138,12 +138,286 @@ Chloé
 Équation
 \end_layout
 
+\begin_layout Standard
+Dans un problème gravitationnel à N corps, chaque point i de masse 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+est soumis à une force gravitationnelle et donc à un potentiel gravitationnel
+ par tous les autres points 
+\begin_inset Formula $j$
+\end_inset
+
+ tels que :
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $F_{j\rightarrow i}=-G*\frac{m_{i}*m_{j}}{|\vec{r_{j}}-\vec{r}_{i}|^{3}}*(\vec{r_{j}}-\vec{r_{i}})$
+\end_inset
+
+ où 
+\begin_inset Formula $G=6,67.10^{-11}m^{3}.kg^{-1}.t^{-2}$
+\end_inset
+
+ est la constante gravitationelle, 
+\begin_inset Formula $r_{i}$
+\end_inset
+
+ et 
+\begin_inset Formula $r_{j}$
+\end_inset
+
+les positions des masses 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+et 
+\begin_inset Formula $m_{j}$
+\end_inset
+
+ ;
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $E_{ji}=-G*\frac{m_{i}*m_{j}}{(r_{j}-r_{i})}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cependant, pour éviter d'avoir des forces divergentes lorsque deux particules
+ sont trop proches l'une de l'autre, nous avons introduit un paramètre d'atténua
+tion 
+\begin_inset Formula $\epsilon=5 $
+\end_inset
+
+USI.
+\end_layout
+
+\begin_layout Standard
+Pour chaque point i, on obtient donc : 
+\begin_inset Formula 
+\[
+m_{i}*\ddot{r_{i}}=-G*m_{i}\sum\frac{m_{j}}{|\vec{r_{j}-}\vec{r_{i}|{}^{2}+\epsilon^{2}}}*\frac{(\vec{r_{j}-}\vec{r_{i})}}{|\vec{r_{j}-}\vec{r_{i}|}}(\ast)
+\]
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Calcul numérique
 \end_layout
 
+\begin_layout Standard
+L'algorithme de Barnes-Hut nous permet de résoudre les N équations associées
+ aux 
+\begin_inset Formula $N^{2}$
+\end_inset
+
+interactions en 
+\begin_inset Formula $O(N\log N)$
+\end_inset
+
+ au lieu de 
+\begin_inset Formula $O(N^{2}).$
+\end_inset
+
+Il repose sur un arbre hiérarchique dans lequel sont placés les points du
+ système.
+ Il fonctionne de la manière suivante : le plan contenant les centres de
+ masse est divisé en quatre quadrants, qui sont représentés chacun par une
+ branche de l'arbre.
+ Chaque quadrant est ensuite divisé en quatre tant qu'il renferme strictement
+ plus d'une particule.
+ Un arbre résultant avec 1000 particules est présenté en figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Illustration de l'arbre"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Plus les particules sont réparties de façon non homogène dans l'espace,
+ plus l'arbre est donc profond.
+ L'apport de l'algorithme pour le calcul d'une force d'interaction exercée
+ sur une particule est de ne considérer que le centre de masse du quadrant
+ considéré si la taille de celui-ci est plus grande que la distance entre
+ la particule et le centre de masse multiplié par un certain angle 
+\begin_inset Formula $\theta.$
+\end_inset
+
+Nous avons pris 
+\begin_inset Formula $\theta=0.7$
+\end_inset
+
+conformémant à la littérature.
+ Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ seule l'interaction avec le centre de masses du groupe de particules sera
+ calculé, au lieu de calculer chaque force d'interaction avec les particules
+ du groupe : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Si\frac{l}{d}\leq\theta,\sum F_{j\rightarrow i}=F_{COM\rightarrow i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Les feuilles externes de l'arbre contiennent ainsi au plus une particule
+ tandis que les noeuds internes contiennent les information des centres
+ de masse de leurs feuilles-enfant.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Quadtree_illustration.png
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "Illustration de l'arbre"
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Illustration de la division du plan selon l'algorithme de Barnes-Hut avec
+ 1000 particules
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La hauteur h de l'arbre ainsi construit est en 
+\begin_inset Formula $O(ln(N))$
+\end_inset
+
+.
+ En effet, soit une feuille externe contenant une particule.
+ En moyenne, pour une répartition homogène des particules, elle contient
+ 
+\begin_inset Formula $\frac{N}{4^{h}}$
+\end_inset
+
+ particules.
+ Donc : 
+\begin_inset Formula 
+\[
+1=\frac{N}{4^{h}}\Rightarrow h=O(ln(N))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lors du calcul de la force exercée sur sur une particule, l'arbre est parcouru
+ en profondeur jusqu'à remplir le critère d'approximation ou tomber sur
+ une feuille externe.
+ Comme il y a N particules pour une profondeur moyenne de l'arbre en 
+\begin_inset Formula $O(ln(N))$
+\end_inset
+
+, le calcul de l'ensemble des forces s'effectue donc en 
+\begin_inset Formula $O(Nln(N)).$
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Time intégration
+\end_layout
+
+\begin_layout Standard
+Une fois l'arbre construit et les interactions entre les N particules calculées,
+ il suffit d'intégrer (
+\begin_inset Formula $\ast)$
+\end_inset
+
+ pour chaque particule afin d'obtenir sa nouvelle position.
+ Pour ce faire, nous avons utilisé plusieurs schémas d'intégration d'ordre
+ différents : 
+\end_layout
+
+\begin_layout Itemize
+Tout d'abord, un schéma d'intégration naïf au premier ordre : 
+\begin_inset Formula 
+\[
+v_{i}(t+\Delta t)=\ddot{r_{i}}(t)*\Delta t
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{i}(t+\Delta t)=v_{i}(t)*\Delta t
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Puis la méthode Leapfrog au second ordre : 
+\begin_inset Formula 
+\[
+v_{i}(t+\Delta t)=v_{i}(t)+\frac{a_{i}(t)+a_{i}(t+\Delta t)}{2}*\Delta t
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{i}(t+\Delta t)=r_{i}(t)+v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Enfin la méthode de Hermite au second ordre : 
 \end_layout
 
 \begin_layout Section
@@ -196,7 +470,7 @@ s des salles d'informatique qui était environ dix fois plus rapide que nos
  au même information en même temps.
  La partie la plus gourmande est le calcul des interactions à chaque pas
  de temps entre toutes les particules (en 
-\begin_inset Formula $O(nlog(n))$
+\begin_inset Formula $O(Nlog(N))$
 \end_inset
 
 ).

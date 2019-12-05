@@ -87,7 +87,7 @@
 \begin_body
 
 \begin_layout Title
-Rapport d'EA : résolution numérique du proglème à N-corps
+Rapport d'EA : résolution numérique du problème à N-corps
 \end_layout
 
 \begin_layout Author
@@ -96,6 +96,32 @@ Romain Lenoble - Chloé Vernière
 
 \begin_layout Section
 Introduction
+\end_layout
+
+\begin_layout Standard
+Déterminer le mouvements de N points en interaction gravitationnelle les
+ uns avec les autres est un problème physique fondamental en astronomie.
+ Des des méthodes numériques permettent de résoudre ce problème pour un
+ grand nombre de particules.
+ En particulier, l'algorithme de Barnes-Hut, que nous avons implémenté,
+ permet d'obtenir des approximations pour un temps de l'ordre de 
+\begin_inset Formula $N\log(N)$
+\end_inset
+
+ grâce à une structure en arbre récursive, alors qu'un algorithme naïf serait
+ en 
+\begin_inset Formula $O(N^{2})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Dans un premier temps, nous allons présenter la méthode générale employée
+ pour résoudre ce problème.
+ Puis dans un second temps, nous reviendrons sur les résultats que nous
+ avons obtenus.
 \end_layout
 
 \begin_layout Section
@@ -109,15 +135,234 @@ Chloé
 \end_layout
 
 \begin_layout Subsection
-Equation
+Équation
+\end_layout
+
+\begin_layout Standard
+Dans un problème gravitationnel à N corps, chaque point i de masse 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+est soumis à une force gravitationnelle et donc à un potentiel gravitationnel
+ par tous les autres points 
+\begin_inset Formula $j$
+\end_inset
+
+ tels que :
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $F_{j\rightarrow i}=-G*\frac{m_{i}*m_{j}}{|\vec{r_{j}}-\vec{r}_{i}|^{3}}*(\vec{r_{j}}-\vec{r_{i}})$
+\end_inset
+
+ où 
+\begin_inset Formula $G=6,67.10^{-11}m^{3}.kg^{-1}.t^{-2}$
+\end_inset
+
+ est la constante gravitationelle, 
+\begin_inset Formula $r_{i}$
+\end_inset
+
+ et 
+\begin_inset Formula $r_{j}$
+\end_inset
+
+les positions des masses 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+et 
+\begin_inset Formula $m_{j}$
+\end_inset
+
+ ;
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $E_{ji}=-G*\frac{m_{i}*m_{j}}{(r_{j}-r_{i})}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cependant, pour éviter d'avoir des forces divergentes lorsque deux particules
+ sont trop proches l'une de l'autre, nous avons introduit un paramètre d'atténua
+tion 
+\begin_inset Formula $\epsilon=5 $
+\end_inset
+
+USI.
+\end_layout
+
+\begin_layout Standard
+Pour chaque point i, on obtient donc : 
+\begin_inset Formula 
+\[
+m_{i}*\ddot{r_{i}}=-G*m_{i}\sum\frac{m_{j}}{|\vec{r_{j}-}\vec{r_{i}|{}^{2}+\epsilon^{2}}}*\frac{(\vec{r_{j}-}\vec{r_{i})}}{|\vec{r_{j}-}\vec{r_{i}|}}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
 Calcul numérique
 \end_layout
 
+\begin_layout Standard
+L'algorithme de Barnes-Hut nous permet de résoudre les N équations associées
+ aux 
+\begin_inset Formula $N^{2}$
+\end_inset
+
+interactions en 
+\begin_inset Formula $O(N\log N)$
+\end_inset
+
+ au lieu de 
+\begin_inset Formula $O(N^{2}).$
+\end_inset
+
+Il repose sur un arbre hiérarchique dans lequel sont placés les points du
+ système.
+ Il fonctionne de la manière suivante : le plan contenant les centres de
+ masse est divisé en quatre quadrants, qui sont représentés chacun par une
+ branche de l'arbre.
+ Chaque quadrant est ensuite divisé en quatre tant qu'il renferme strictement
+ plus d'une particule.
+ Un arbre résultant avec 1000 particules est présenté en figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Illustration de l'arbre"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Plus les partiules sont réparties de façon non homogène dans l'espace,
+ plus l'arbre est donc profond.
+ L'apport de l'algorithme pour le calcul d'une force d'interaction exercée
+ sur une particule est de ne considérer que le centre de masse du quadrant
+ considéré si la taille de celui-ci est plus grande que la distance entre
+ la particule et le centre de masse multiplié par un certain angle 
+\begin_inset Formula $\theta.$
+\end_inset
+
+Nous avons pris 
+\begin_inset Formula $\theta=0.7$
+\end_inset
+
+conformémant à la littérature.
+ Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ seule l'interaction avec le centre de masses du groupe de particules sera
+ calculé, au lieu de calculer chaque force d'interaction avec les particules
+ du groupe : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Si\frac{l}{d}\leq\theta,\sum F_{j\rightarrow i}=F_{COM\rightarrow i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Les feuilles externes de l'arbre contiennent ainsi au plus une particule
+ tandis que les noeuds internes contiennent les information des centres
+ de masse de leurs feuilles-enfant.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Quadtree_illustration.png
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "Illustration de l'arbre"
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Illustration de la division du plan selon l'algorithme de Barnes-Hut avec
+ 1000 particules
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La hauteur h de l'arbre ainsi construit est en 
+\begin_inset Formula $O(ln(N))$
+\end_inset
+
+.
+ En effet, soit une feuille externe contenant une particule.
+ En moyenne, pour une répartition homogène des particules, elle contient
+ 
+\begin_inset Formula $\frac{N}{4^{h}}$
+\end_inset
+
+ particules.
+ Donc : 
+\begin_inset Formula 
+\[
+1=\frac{N}{4^{h}}\Rightarrow h=O(ln(N))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lors du calcul de la force exercée sur sur une particule, l'arbre est parcouru
+ en profondeur jusqu'à remplir le critère d'approximation ou tomber sur
+ une feuille externe.
+ Comme il y a N particules pour une profondeur moyenne de l'arbre en 
+\begin_inset Formula $O(ln(N))$
+\end_inset
+
+, le calcul de l'ensemble des forces s'effectue donc en 
+\begin_inset Formula $O(Nln(N)).$
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
-Time integration
+Time intégration
 \end_layout
 
 \begin_layout Section
@@ -138,27 +383,27 @@ Nous avons codé l'algorithme dans le fichier /code du git.
 Au début (pendant les deux premières semaines), nous sommes partis en utilisant
  des classes : c'est ce qui nous semblait le plus simple au vu de la complexité
  de l’algorithme.
- Nous avons créer une classe pour les particules, une pour les nœuds de
- l'arbre et une pour l'arbre en entier.
+ Nous avons créé une classe pour les particules, une pour les nœuds de l'arbre
+ et une pour l'arbre en entier.
  La classe particule était particulièrement lourde, elle contenait la vitesse,
  la position, la masse, l'énergie, l’accélération et la force qui s'exerçait
  sur la particule notamment.
  Lorsque nous avons voulu optimiser le code en augmentant le nombre de particule
-, nous somme rapidement arrivé à des problèmes lié à cette structure : le
- code était très lent et nous étions limité en mémoire.
+, nous sommes rapidement arrivés à des problèmes liés à cette structure
+ : le code était très lent et nous étions limité en mémoire.
 \end_layout
 
 \begin_layout Standard
-Pour palier à ces problèmes, nous avons réécris le code en nous affranchissant
+Pour palier à ces problèmes, nous avons réécrit le code en nous affranchissant
  au maximum de la structure de classe et en utilisant des tableaux numpy
- qui sont beaucoup plus rapide à traiter par l'ordinateur.
+ qui sont beaucoup plus rapides à traiter par l'ordinateur.
  Dans la dernière version du code (fichier array_node), nous n'avons plus
  qu'une classe : la classe Node pour coder l'arbre.
  Le reste des données est stocké dans des tableaux où l'indice correspond
  à une particule en particulier.
- Cette nouvelle architecture a permis un gain de temps énorme (le code est
- près de 10 fois plus rapide) et nous a permis de lancer des calculs avec
- beaucoup plus de particule.
+ Cette nouvelle architecture a permis un gain de temps important, le code
+ est près de 10 fois plus rapide, et nous a permis de lancer des calculs
+ avec beaucoup plus de particules.
 \end_layout
 
 \begin_layout Standard
@@ -170,7 +415,7 @@ s des salles d'informatique qui était environ dix fois plus rapide que nos
  au même information en même temps.
  La partie la plus gourmande est le calcul des interactions à chaque pas
  de temps entre toutes les particules (en 
-\begin_inset Formula $O(nlog(n))$
+\begin_inset Formula $O(Nlog(N))$
 \end_inset
 
 ).
@@ -432,14 +677,14 @@ Comme vu dans la première partie, différents schéma d'intégrations existent.
 \end_layout
 
 \begin_layout Standard
-Nous allons comparer ici le schema d'Euler du premier ordre, le schéma leapfrog
+Nous allons comparer ici le schéma d'Euler du premier ordre, le schéma leapfrog
  et le schéma du deuxième ordre pour le même pas de temps dans la situation
  précédente.
  Le pas de temps vaut 0.007.
 \end_layout
 
 \begin_layout Paragraph
-Shéma d'Euler :
+Schéma d'Euler :
 \end_layout
 
 \begin_layout Standard
@@ -545,7 +790,7 @@ Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \begin_layout Paragraph
-Schema Leapfrog :
+Schéma Leapfrog :
 \end_layout
 
 \begin_layout Standard
@@ -759,7 +1004,7 @@ Trajectoire (bleu : soleil, orange : Terre)
 \begin_layout Standard
 Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
  schéma du deuxième ordre, ce qui était attendu : schéma à l'ordre supérieur
- et symétrique ne temps.
+ et symétrique en temps.
  La trajectoire semble cependant identique.
  Pour des simulations beaucoup plus longues, nous avons remarqué que les
  deux premiers schéma conservait très mal l'énergie par rapport au dernier.
@@ -923,8 +1168,6 @@ Lors des simulation, nous tirons les particules au hasard.
 Simulations obtenues :
 \end_layout
 
-<<<<<<< HEAD
-=======
 \begin_layout Standard
 A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
  calculs avec un grand nombre de particules (plusieurs milliers).
@@ -942,13 +1185,10 @@ literal "false"
  une galaxie.
 \end_layout
 
->>>>>>> 284409f56504d1a7e3b26cc3c904984f1b5f4abe
 \begin_layout Subsubsection
 Simulation galactique
 \end_layout
 
-<<<<<<< HEAD
-=======
 \begin_layout Standard
 La simulation d'une galaxie dépend énormément des conditions initiales :
  masse de trou noir, distribution de masse et de vitesse.
@@ -964,10 +1204,17 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 \begin_inset Formula $v(r)=\sqrt{G\frac{M(\leq r)}{R}}$
 \end_inset
 
+.
+ Cette vitesse assure une stabilité et évite que les particules s'effondrent
+ au centre ou se libère du potentiel central.
+ Nous nous attendons à voir les inhomogénéité de densité lié à l'initialisation
+ augmenter jusqu'à former des filaments.
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
->>>>>>> 284409f56504d1a7e3b26cc3c904984f1b5f4abe
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
