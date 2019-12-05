@@ -159,7 +159,7 @@ est soumis à une force gravitationnelle et donc à un potentiel gravitationnel
 \begin_inset Formula $G=6,67.10^{-11}m^{3}.kg^{-1}.t^{-2}$
 \end_inset
 
- est la constante gravitationelle, 
+ est la constante gravitationnelle, 
 \begin_inset Formula $r_{i}$
 \end_inset
 
@@ -186,21 +186,42 @@ et
 \end_layout
 
 \begin_layout Standard
-Cependant, pour éviter d'avoir des forces divergentes lorsque deux particules
- sont trop proches l'une de l'autre, nous avons introduit un paramètre d'atténua
-tion 
+Cependant, l'un des gros problèmes des simulations à N-corps est lorsque
+ deux objets se trouvent très proches.
+ La trajectoire de chaque particule n'est pas une conique classique comme
+ dans le problème à deux corps.
+ Lorsque la distance qu'une particule parcourt en une seule itération dépasse
+ la distance entre elle-même et une autre particule, une collision s'est
+ produite.
+ Le problème est que ce genre d’évènement peut modifier énormément l'énergie
+ cinétique totale : c'est ce phénomène qui se passe lorsque des particules
+ sont éjectées très violemment et sortent du potentiel d'attraction de la
+ galaxie dans les simulations.
+ Une solution pour limiter ce problème est d’implanter une force modifiée
+ à courte portée, de sorte que la force de gravitation soit réduite à courte
+ distance.
+ Cela peut se traduite par l'ajout d'un paramètre d'atténuation 
 \begin_inset Formula $\epsilon=5$
 \end_inset
 
 USI.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "galaxysimulation"
+literal "false"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Pour chaque point i, on obtient donc : 
+Pour chaque point i, on a : 
 \begin_inset Formula 
-\[
-m_{i}*\ddot{r_{i}}=-G*m_{i}\sum\frac{m_{j}}{|\vec{r_{j}-}\vec{r_{i}|{}^{2}+\epsilon^{2}}}*\frac{(\vec{r_{j}-}\vec{r_{i})}}{|\vec{r_{j}-}\vec{r_{i}|}}(\ast)
-\]
+\begin{equation}
+m_{i}*\ddot{r_{i}}=-G*m_{i}\sum\frac{m_{j}}{|\vec{r_{j}-}\vec{r_{i}|{}^{2}+\epsilon^{2}}}*\frac{(\vec{r_{j}-}\vec{r_{i})}}{|\vec{r_{j}-}\vec{r_{i}|}}\label{eq:du mouvement}
+\end{equation}
 
 \end_inset
 
@@ -212,8 +233,15 @@ Calcul numérique
 \end_layout
 
 \begin_layout Standard
-L'algorithme de Barnes-Hut nous permet de résoudre les N équations associées
- aux 
+L'algorithme de Barnes-Hut 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "barnshutalgortihm"
+literal "false"
+
+\end_inset
+
+ permet de résoudre les N équations associées aux 
 \begin_inset Formula $N^{2}$
 \end_inset
 
@@ -222,11 +250,12 @@ interactions en
 \end_inset
 
  au lieu de 
-\begin_inset Formula $O(N^{2}).$
+\begin_inset Formula $O(N^{2})$
 \end_inset
 
-Il repose sur un arbre hiérarchique dans lequel sont placés les points du
- système.
+, moyennant des approximations contrôlables.
+ Il repose sur un arbre hiérarchique dans lequel sont placés les points
+ du système.
  Il fonctionne de la manière suivante : le plan contenant les centres de
  masse est divisé en quatre quadrants, qui sont représentés chacun par une
  branche de l'arbre.
@@ -256,8 +285,8 @@ Nous avons pris
 \begin_inset Formula $\theta=0.7$
 \end_inset
 
-conformémant à la littérature.
- Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ conformément à la littérature.
+ Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
  seule l'interaction avec le centre de masses du groupe de particules sera
  calculé, au lieu de calculer chaque force d'interaction avec les particules
  du groupe : 
@@ -276,8 +305,8 @@ Si\frac{l}{d}\leq\theta,\sum F_{j\rightarrow i}=F_{COM\rightarrow i}
 
 \begin_layout Standard
 Les feuilles externes de l'arbre contiennent ainsi au plus une particule
- tandis que les noeuds internes contiennent les information des centres
- de masse de leurs feuilles-enfant.
+ tandis que les nœuds internes contiennent les information des centres de
+ masse de leurs enfants.
  
 \end_layout
 
@@ -288,8 +317,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Quadtree_illustration.png
+	scale 60
 
 \end_inset
 
@@ -362,22 +393,59 @@ Lors du calcul de la force exercée sur sur une particule, l'arbre est parcouru
 \end_layout
 
 \begin_layout Subsection
-Time intégration
+Intégration temporelle
 \end_layout
 
 \begin_layout Standard
 Une fois l'arbre construit et les interactions entre les N particules calculées,
- il suffit d'intégrer (
-\begin_inset Formula $\ast)$
+ il suffit d'intégrer 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:du mouvement"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
  pour chaque particule afin d'obtenir sa nouvelle position.
  Pour ce faire, nous avons utilisé plusieurs schémas d'intégration d'ordre
- différents : 
+ différents, même si la force modifiée permet une plus grande liberté sur
+ le pas de temps.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "articleN-bodycours"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dans la suite, nous notons 
+\begin_inset Formula $v_{i}(t)$
+\end_inset
+
+ la vitesse de la particule au temps t, 
+\begin_inset Formula $r_{i}(t)$
+\end_inset
+
+ la position de la particule en t, 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ le pas de temps et 
+\begin_inset Formula $a_{i}(t)$
+\end_inset
+
+ l'accélération en t.
 \end_layout
 
 \begin_layout Itemize
-Tout d'abord, un schéma d'intégration naïf au premier ordre : 
+Tout d'abord, un schéma d'intégration naïf au premier ordre (ou schéma d'Euler)
+ : 
 \begin_inset Formula 
 \[
 v_{i}(t+\Delta t)=\ddot{r_{i}}(t)*\Delta t
@@ -394,6 +462,11 @@ r_{i}(t+\Delta t)=v_{i}(t)*\Delta t
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Ce schéma au premier ordre est le plus simple qu'il existe, mais ses erreurs
+ sont assez importante, notamment pour la conservation de l'énergie.
 \end_layout
 
 \begin_layout Itemize
@@ -414,6 +487,11 @@ r_{i}(t+\Delta t)=r_{i}(t)+v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Nous avons beaucoup utilisé cette intégrateur car il était très rapide,
+ tout en permettant une bonne conservation de l'énergie.
 \end_layout
 
 \begin_layout Itemize
@@ -437,7 +515,25 @@ r_{i}(t+\Delta t)=v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}+\frac{1}{6}
 \end_layout
 
 \begin_layout Standard
-Pour la stabilité de chacun des schémas 
+\align center
+où 
+\begin_inset Formula $\dot{a_{i}}=-G\underset{j\neq i}{\sum}m_{j}\frac{x_{ij}^{2}\dot{x_{ij}}-3x_{ij}(\dot{x_{ij}}.x_{ij})}{|x_{ij}|^{5}}$
+\end_inset
+
+ correspond à la la dérivée de l'accélération
+\end_layout
+
+\begin_layout Standard
+Cet intégrateur est le plus précis que nous ayons utilisé.
+ Ces équations sont symétriques en temps et donnent une excellente conservation
+ de l'énergie.
+ Il nécessite cependant de passer par un schéma implicite qui nécessite
+ de calculer la dérivée de la force ce qui a un cout de calcul non négligeable.
+\end_layout
+
+\begin_layout Standard
+Pour la stabilité de chacun des schémas, nous avons choisi pour un pas de
+ temps constant.
 \end_layout
 
 \begin_layout Section
@@ -449,17 +545,19 @@ Nous avons codé l'algorithme dans le fichier /code du git.
 \end_layout
 
 \begin_layout Standard
-Au début (pendant les deux premières semaines), nous sommes partis en utilisant
- des classes : c'est ce qui nous semblait le plus simple au vu de la complexité
- de l’algorithme.
- Nous avons créé une classe pour les particules, une pour les nœuds de l'arbre
- et une pour l'arbre en entier.
+Au début (pendant les deux premières semaines), nous avons construit notre
+ code autour de différentes classes : c'est ce qui nous semblait le plus
+ simple au vu de la complexité de l’algorithme.
+ Nous avons ainsi créé une classe pour les particules, une pour les nœuds
+ de l'arbre et une pour l'arbre en entier.
  La classe particule était particulièrement lourde, elle contenait la vitesse,
  la position, la masse, l'énergie, l’accélération et la force qui s'exerçait
  sur la particule notamment.
  Lorsque nous avons voulu optimiser le code en augmentant le nombre de particule
 , nous sommes rapidement arrivés à des problèmes liés à cette structure
  : le code était très lent et nous étions limité en mémoire.
+ De plus, les outils vectoriels de Numpy n'étaient pas utilisable avec une
+ telle architecture.
 \end_layout
 
 \begin_layout Standard
@@ -477,22 +575,29 @@ Pour palier à ces problèmes, nous avons réécrit le code en nous affranchissa
 
 \begin_layout Standard
 Les calculs restent tout de même très gourmand en temps, même sur les ordinateur
-s des salles d'informatique qui était environ dix fois plus rapide que nos
- ordinateurs personnels.
+s des salles d'informatique qui étaient environ dix fois plus rapides que
+ nos ordinateurs personnels.
  Nous avons essayé d'optimiser la rapidité du code avec du multiprocessing
  mais l'architecture du code est assez complexe et nécessite d'avoir accès
- au même information en même temps.
+ au même information en même temps par tout les processeurs.
  La partie la plus gourmande est le calcul des interactions à chaque pas
  de temps entre toutes les particules (en 
 \begin_inset Formula $O(Nlog(N))$
 \end_inset
 
 ).
- Pour chaque particule, nous calculions les intéractions avec ses voisines
+ Pour chaque particule, nous calculions les interactions avec ses voisines
  selon la descente de l'arbre, comme expliqué plus haut.
- Nous aurions voulu utiliser du multiprocessing pour que chaque force soit
- calculée en même temps mais chaque calcul nécessitait l'accès aux même
- données, ce qui ne facilitait pas cette pratique.
+ C'est ici que nous aurions voulu utiliser du multiprocessing pour que chaque
+ force soit calculée en même temps mais chaque calcul nécessitait l'accès
+ aux même données, ce qui ne facilitait pas cette pratique.
+\end_layout
+
+\begin_layout Standard
+Nous avons uniquement fait des modélisation en 2D mais le code est très
+ facilement extensible à la troisième dimension : il suffit d'ajouter une
+ dernière dimension dans le choix du huitième de cube dans lequel appartient
+ chaque particule au moment de la descente de l'arbre.
 \end_layout
 
 \begin_layout Subsection
@@ -500,8 +605,7 @@ Vérification de la validité de l'algorithme
 \end_layout
 
 \begin_layout Standard
-La première étape a été de vérifier si notre algorithme avait une bonne
- précision.
+Premièrement, nous avons vérifié si notre algorithme avait une bonne précision.
  Pour cela, nous avons utilisé le problème à deux corps dont la solution
  analytique est connue.
  Nous avons notamment simulé un système Terre-Soleil où l'un des deux corps
@@ -522,7 +626,7 @@ Voilà les résultats obtenus avec ce système, avec les conditions initiales
 \begin_inset Formula $10^{4}$
 \end_inset
 
-et celle du satellite 1) :
+et celle du satellite) :
 \end_layout
 
 \begin_layout Standard
@@ -1076,21 +1180,14 @@ Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
  et symétrique en temps.
  La trajectoire semble cependant identique.
  Pour des simulations beaucoup plus longues, nous avons remarqué que les
- deux premiers schéma conservait très mal l'énergie par rapport au dernier.
- A chaque fois, l'énergie dérivait et n'était pas conservée au bout d'un
- certain pas de temps.
-\end_layout
-
-\begin_layout Standard
-Ainsi, nous avons vu les différence entre les schémas.
-\begin_inset CommandInset citation
-LatexCommand cite
-key "articleN-bodycours"
-literal "false"
-
-\end_inset
-
-
+ deux premiers schéma conservait mal l'énergie et était très dépendant du
+ pas de temps.
+ Cependant, le schéma de Hermite au 2ème ordre nécessite de calculer de
+ taux de variation de l'accélération.
+ Ce calcul est couteux, ce qui rend le code utilisant le schéma de Hermite
+ près de 3 fois plus lent que le schéma de leapfrog.
+ C'est pour cela que nous avons utilisé ce dernier pour la suite de nos
+ simulations.
 \end_layout
 
 \begin_layout Standard
@@ -1254,6 +1351,24 @@ literal "false"
  une galaxie.
 \end_layout
 
+\begin_layout Standard
+Dans toute nos simulation, nous avons pris 
+\begin_inset Formula $\theta=0.7$
+\end_inset
+
+, qui était la valeur utilisée dans 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+.
+ Une valeur plus grande permettait de meilleur calcul mais la conservation
+ de l'énergie potentielle n'était pas très bonne.
+\end_layout
+
 \begin_layout Subsubsection
 Simulation galactique
 \end_layout
@@ -1284,6 +1399,39 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
  de mécanique des fluides.
  Ces phénomènes modifient énormément la morphologie des galaxies.
  Pour toutes ces raisons, notre modèle n'est pas très réaliste.
+\end_layout
+
+\begin_layout Standard
+Enfin, notre modèle ne représente pas du tout un proto-système solaire car
+ nous n'avons pas mis en place de processus d’accrétion entre les particules.
+ Il ne prend pas en compte les collisions entre corps.
+ Cette approximation est justifiée pour la modélisation d'une galaxie où
+ les collisions entre étoiles sont très rares car les distances sont très
+ grandes.
+ En revanche, les planètes du système solaire se sont formées par accrétion
+ successive de corps plus petits, les collisions étaient alors très fréquentes.
+\end_layout
+
+\begin_layout Standard
+La simulation ci-dessus est la plus grande que nous ayons faite pour une
+ galaxie seule.
+ Elle inclue 4000 particules réparties aléatoirement suivant une distribution
+ en 
+\begin_inset Formula $\frac{1}{r}$
+\end_inset
+
+.
+ Le pas de temps vaut 0.008 et il y a 10000 itérations.
+ La masse du trou noir central vaut 
+\begin_inset Formula $10^{3}[G]kg$
+\end_inset
+
+ et celle des particules élémentaire 
+\begin_inset Formula $1[G]kg$
+\end_inset
+
+.
+ Elle a été calculée sur les ordinateurs de l'X et a mis près de 10h à calculer.
 \end_layout
 
 \begin_layout Standard
@@ -1481,6 +1629,12 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Sur ces quelques images, on remarque que à partir d'une distribution aléatoire,
+ on observe rapidement l'émergence de grandes structures filamentaires,
+ à l'image des bras observé sur la majorité des galaxies.
 \end_layout
 
 \begin_layout Standard
