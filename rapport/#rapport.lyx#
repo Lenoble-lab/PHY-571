@@ -142,12 +142,13 @@ Déterminer le mouvements de N points en interaction gravitationnelle les
  Des des méthodes numériques permettent de résoudre ce problème pour un
  grand nombre de particules.
  En particulier, l'algorithme de Barnes-Hut, que nous avons implémenté,
- permet d'obtenir des approximations pour un temps de l'ordre de 
+ permet, moyennant quelques approximations quantifiables, d'obtenir une
+ complexité de 
 \begin_inset Formula $N\log(N)$
 \end_inset
 
- grâce à une structure en arbre récursive, alors qu'un algorithme naïf serait
- en 
+ grâce à une structure en arbre récursive, alors qu'un algorithme exact
+ serait en 
 \begin_inset Formula $O(N^{2})$
 \end_inset
 
@@ -164,12 +165,6 @@ Dans un premier temps, nous allons présenter la méthode générale employée
 
 \begin_layout Section
 Méthodes pour résoudre le problème à N-corps
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Chloé
 \end_layout
 
 \begin_layout Subsection
@@ -238,7 +233,8 @@ Cependant, l'un des gros problèmes des simulations à N-corps est lorsque
  Une solution pour limiter ce problème est d’implanter une force modifiée
  à courte portée, de sorte que la force de gravitation soit réduite à courte
  distance.
- Cela peut se traduite par l'ajout d'un paramètre d'atténuation 
+ Cela peut se traduite par l'ajout d'un paramètre d'atténuation que l'on
+ a choisit 
 \begin_inset Formula $\epsilon=5$
 \end_inset
 
@@ -324,15 +320,11 @@ Nous avons pris
 \begin_inset Formula $\theta=0.7$
 \end_inset
 
-<<<<<<< HEADconformémant à la littérature.
- Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ conformément à la littérature.
+ Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
  seule l'interaction avec le centre de masse du groupe de particules sera
  calculée, au lieu de la calculer avec chacune des particules du groupe
- : ======= conformément à la littérature.
- Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
- seule l'interaction avec le centre de masses du groupe de particules sera
- calculé, au lieu de calculer chaque force d'interaction avec les particules
- du groupe : >>>>>>> 4eeb1e0cadb770fdd1e7efaa019abbde0db238bf
+ : 
 \end_layout
 
 \begin_layout Standard

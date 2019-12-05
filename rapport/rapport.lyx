@@ -142,12 +142,13 @@ Déterminer le mouvements de N points en interaction gravitationnelle les
  Des des méthodes numériques permettent de résoudre ce problème pour un
  grand nombre de particules.
  En particulier, l'algorithme de Barnes-Hut, que nous avons implémenté,
- permet d'obtenir des approximations pour un temps de l'ordre de 
+ permet, moyennant quelques approximations quantifiables, d'obtenir une
+ complexité de 
 \begin_inset Formula $N\log(N)$
 \end_inset
 
- grâce à une structure en arbre récursive, alors qu'un algorithme naïf serait
- en 
+ grâce à une structure en arbre récursive, alors qu'un algorithme exact
+ serait en 
 \begin_inset Formula $O(N^{2})$
 \end_inset
 
@@ -164,12 +165,6 @@ Dans un premier temps, nous allons présenter la méthode générale employée
 
 \begin_layout Section
 Méthodes pour résoudre le problème à N-corps
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Chloé
 \end_layout
 
 \begin_layout Subsection
@@ -238,7 +233,8 @@ Cependant, l'un des gros problèmes des simulations à N-corps est lorsque
  Une solution pour limiter ce problème est d’implanter une force modifiée
  à courte portée, de sorte que la force de gravitation soit réduite à courte
  distance.
- Cela peut se traduite par l'ajout d'un paramètre d'atténuation 
+ Cela peut se traduite par l'ajout d'un paramètre d'atténuation que l'on
+ a choisit 
 \begin_inset Formula $\epsilon=5$
 \end_inset
 
@@ -324,15 +320,11 @@ Nous avons pris
 \begin_inset Formula $\theta=0.7$
 \end_inset
 
-<<<<<<< HEADconformémant à la littérature.
- Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ conformément à la littérature.
+ Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
  seule l'interaction avec le centre de masse du groupe de particules sera
  calculée, au lieu de la calculer avec chacune des particules du groupe
- : ======= conformément à la littérature.
- Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
- seule l'interaction avec le centre de masses du groupe de particules sera
- calculé, au lieu de calculer chaque force d'interaction avec les particules
- du groupe : >>>>>>> 4eeb1e0cadb770fdd1e7efaa019abbde0db238bf
+ :
 \end_layout
 
 \begin_layout Standard
@@ -571,7 +563,7 @@ Cet intégrateur est le plus précis que nous ayons utilisé.
  Ces équations sont symétriques en temps et donnent une excellente conservation
  de l'énergie.
  Il nécessite cependant de passer par un schéma implicite qui nécessite
- de calculer la dérivée de la force ce qui a un cout de calcul non négligeable.
+ de calculer la dérivée de la force, ce qui a un cout de calcul non négligeable.
 \end_layout
 
 \begin_layout Standard
@@ -741,7 +733,7 @@ status open
 \begin_inset Graphics
 	filename trace_terre_soleil_0.002.jpg
 	lyxscale 40
-	scale 30
+	scale 25
 	BoundingBox 0bp 0bp 640bp 480bp
 
 \end_inset
@@ -914,7 +906,6 @@ Schéma d'Euler :
 \end_layout
 
 \begin_layout Standard
-\align center
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -1249,7 +1240,7 @@ On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
 \end_layout
 
 \begin_layout Paragraph
-Exemple de simulation où le pas de temps est trop petit :
+Exemple de simulation où le pas de temps est trop grand :
 \end_layout
 
 \begin_layout Standard
@@ -1382,7 +1373,7 @@ Simulations obtenues :
 
 \begin_layout Standard
 A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
- calculs avec un grand nombre de particules (plusieurs milliers).
+ calculs avec un grand nombre de particules (jusqu'à plusieurs milliers).
  Ces calculs mettaient plusieurs heures à tourner.
  Nous avions comme objectif d'obtenir des simulations similaires à 
 \begin_inset CommandInset citation
@@ -1446,15 +1437,15 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 on augmenter jusqu'à former des filaments, à l'image des simulations cosmologiqu
 es actuelles.
  Cependant, notre simulation est très simpliste et ne prend prend en compte
- que la gravitation : pas de noyau actif de galaxies, de supernovae, d'équations
- de mécanique des fluides.
+ que la gravitation : pas de noyau actif de galaxies, de supernovae ou d'équatio
+ns de mécanique des fluides.
  Ces phénomènes modifient énormément la morphologie des galaxies.
  Pour toutes ces raisons, notre modèle n'est pas très réaliste.
 \end_layout
 
 \begin_layout Standard
-Enfin, notre modèle ne représente pas du tout un proto-système solaire car
- nous n'avons pas mis en place de processus d’accrétion entre les particules.
+Enfin, notre modèle ne représente pas non plus tout un proto-système solaire
+ car nous n'avons pas mis en place de processus d’accrétion entre les particules.
  Il ne prend pas en compte les collisions entre corps.
  Cette approximation est justifiée pour la modélisation d'une galaxie où
  les collisions entre étoiles sont très rares car les distances sont très
@@ -1649,22 +1640,12 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-\align left
-\begin_inset space \hspace*{\fill}
-\end_inset
-
-
+\align center
 \begin_inset Graphics
-	filename syst_solaire_0112_1_graph_energy.jpg
+	filename système_solaire/energy_syst_solaire.jpg
 	lyxscale 50
 	scale 30
-	BoundingBox 0bp 0bp 640bp 480bp
-	special syst_solaire_0112_1_graph_energy.jpg
 
-\end_inset
-
-
-\begin_inset space \hspace*{\fill}
 \end_inset
 
 
@@ -1749,7 +1730,8 @@ La simulation ci dessous correspond à ce genre de collision.
 \begin_inset Formula $v_{der}=\sqrt{G\frac{2M(\leq r)}{R}}$
 \end_inset
 
- qui fait que la deuxième galaxie n'est pas liée à la première.
+ , supérieure à la vitesse de libération, ce qui fait que la deuxième galaxie
+ n'est pas liée à la première.
 \end_layout
 
 \begin_layout Standard
@@ -1823,7 +1805,7 @@ status open
 	filename collision_galaxies/Capture_2.JPG
 	lyxscale 30
 	scale 20
-	BoundingBox 0bp 0bp 1171bp 850bp
+	BoundingBox 0bp 0bp 1177bp 879bp
 
 \end_inset
 
@@ -1873,7 +1855,6 @@ status open
 	filename collision_galaxies/Capture_3.JPG
 	lyxscale 30
 	scale 20
-	BoundingBox 0bp 0bp 1182bp 880bp
 
 \end_inset
 
@@ -1910,22 +1891,13 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-\align left
-\begin_inset space \hspace*{\fill}
-\end_inset
-
-
+\align center
 \begin_inset Graphics
-	filename collision_galaxies/collision_0112_1_2000_graph_energy.jpg
-	lyxscale 50
-	scale 30
+	filename collision_galaxies/collision_energy.jpg
+	lyxscale 40
+	scale 32
 	BoundingBox 0bp 0bp 640bp 480bp
-	special syst_solaire_0112_1_graph_energy.jpg
 
-\end_inset
-
-
-\begin_inset space \hspace*{\fill}
 \end_inset
 
 
@@ -1966,10 +1938,10 @@ Finalement, l'algorithme de Barn-Hut nous a permis de faire des simulations
 
 \begin_layout Standard
 Cependant, notre simulation pourrait être amélioré en implémentant différents
- comportements comme la collision et accrétion de matière pour le système
+ comportements comme la collision et l'accrétion de matière pour le système
  solaire ou encore la dynamique des fluides pour les gaz galactiques.
- L'algorithme pourrait quant à lui être amélioré en adaptant les pas de
- temps dans la mesure du possible ou en implémentant la méthode Fast Multipole
+ L'algorithme pourrait quant à lui être amélioré en prenant un pas de temps
+ adapté à chaque particule ou en implémentant la méthode Fast Multipole
  dont la complexité est en 
 \begin_inset Formula $O(N)$
 \end_inset
