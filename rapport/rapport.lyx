@@ -1650,7 +1650,7 @@ status open
 
 
 \begin_inset Graphics
-	filename C:/Users/romain Lenoble/Documents/PHY575/Projet/PHY-571/results/syst_solaire_2/syst_solaire_0112_1_graph_energy.jpg
+	filename syst_solaire_0112_1_graph_energy.jpg
 	lyxscale 50
 	scale 30
 	BoundingBox 0bp 0bp 640bp 480bp
@@ -1682,6 +1682,27 @@ status open
 Sur ces quelques images, on remarque que à partir d'une distribution aléatoire,
  on observe rapidement l'émergence de grandes structures filamentaires,
  à l'image des bras observés sur la majorité des galaxies.
+\end_layout
+
+\begin_layout Standard
+En nous inspirant de 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "galaxysimulation"
+literal "false"
+
+\end_inset
+
+, nous avons tenté de complexifier le modèle en simulant une galaxie composée
+ d'un disque, d'un halos et d'un bulbe galactique.
+ Les particules de ces différentes entités ont alors des positions, des
+ densités et des vitesses initiales différentes.
+ La simulation conduite plus haut est une simplification de celle-ci dans
+ la mesure où toutes les particules sont du même type et que la densité
+ de masse et la vitesse initiale suivent un modèle simple.
+ Cependant, en dépit de nombreuses heures passées dessus, cette simulation
+ n'a pas pu voir le jour car les modèles de vitesse présentés dans l'article
+ ne pouvaient pas être déduit simplement.
 \end_layout
 
 \begin_layout Subsubsection
