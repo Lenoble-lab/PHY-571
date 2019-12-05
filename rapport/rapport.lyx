@@ -163,6 +163,13 @@ Dans un premier temps, nous allons présenter la méthode générale employée
  avons obtenus.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Méthodes pour résoudre le problème à N-corps
 \end_layout
@@ -569,6 +576,13 @@ Cet intégrateur est le plus précis que nous ayons utilisé.
 \begin_layout Standard
 Pour la stabilité de chacun des schémas, nous avons choisi pour un pas de
  temps constant.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1919,6 +1933,13 @@ status open
 \begin_layout Standard
 Cette simulation ne conserve pas l'énergie : le pas de temps de 0.008 est
  trop grand.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
