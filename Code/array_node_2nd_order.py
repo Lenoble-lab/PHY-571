@@ -9,9 +9,9 @@ from Init import *
 
 def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     """
-    Calculate the interaction/energy between target_node and temp_node.
+    Calculate the interaction/energy between target_node and temp_node for a 4th order integration.
     Then : update the values in target_node.
-    To compute everty interaction for a current node, initialise with temp_node = summit of the tree
+    To compute everty interaction for a current node, initialise with temp_node = root of the tree
     """
 
     vect_r = temp_node.COM - target_node.COM    # vector between nodes' centres of mass, for force calculation
@@ -124,7 +124,7 @@ def GravAccel(positions, masses, velocities, thetamax=0.7, G=1.):
 
 def step_2nd_order(positions, masses, velocities, delta_t):
     """
-    put it together : update the tree, calculate the force/energy and finaly update position/velocity with a first order shema
+    put it together : update the tree, calculate the force/energy and finaly update position/velocity with a 4tg order schema
     """
     force, energy, der_force = GravAccel(positions, masses, velocities)
 
