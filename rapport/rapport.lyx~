@@ -1703,9 +1703,9 @@ literal "false"
  d'un disque, d'un halos et d'un bulbe galactique.
  Les particules de ces différentes entités ont alors des positions, des
  densités et des vitesses initiales différentes.
- La simulation conduite plus est une simplification de celle-ci dans la
- mesure où toutes les particules sont du même type et que la densité de
- masse suit un modèle simple.
+ La simulation conduite plus haut est une simplification de celle-ci dans
+ la mesure où toutes les particules sont du même type et que la densité
+ de masse et la vitesse initiale suivent un modèle simple.
  Cependant, en dépit de nombreuses heures passées dessus, cette simulation
  n'a pas pu voir le jour car les modèles de vitesse présentés dans l'article
  ne pouvaient pas être déduit simplement.
@@ -1839,7 +1839,7 @@ status open
 
 \size small
 \emph on
-État après 4000 itérations
+État après 3000 itérations
 \end_layout
 
 \end_inset
@@ -1873,6 +1873,7 @@ status open
 	filename collision_galaxies/Capture_3.JPG
 	lyxscale 30
 	scale 20
+	BoundingBox 0bp 0bp 1182bp 880bp
 
 \end_inset
 
@@ -1884,7 +1885,7 @@ status open
 
 \size small
 \emph on
-État final (après 10000 itérations)
+État final (après 8000 itérations)
 \end_layout
 
 \end_inset

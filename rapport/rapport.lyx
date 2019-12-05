@@ -1699,8 +1699,8 @@ literal "false"
 
 \end_inset
 
-, nous avons tenté de complexifier le modèle en simulant une galaxie composée
- d'un disque, d'un halos et d'un bulbe galactique.
+, nous avons en fin de projet tenté de complexifier le modèle en simulant
+ une galaxie composée d'un disque, d'un halos et d'un bulbe galactique.
  Les particules de ces différentes entités ont alors des positions, des
  densités et des vitesses initiales différentes.
  La simulation conduite plus haut est une simplification de celle-ci dans
@@ -1708,7 +1708,7 @@ literal "false"
  de masse et la vitesse initiale suivent un modèle simple.
  Cependant, en dépit de nombreuses heures passées dessus, cette simulation
  n'a pas pu voir le jour car les modèles de vitesse présentés dans l'article
- ne pouvaient pas être déduit simplement.
+ ne pouvaient pas être déduits et calculés simplement.
 \end_layout
 
 \begin_layout Subsubsection
