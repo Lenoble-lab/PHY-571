@@ -1654,6 +1654,7 @@ status open
 	lyxscale 50
 	scale 30
 	BoundingBox 0bp 0bp 640bp 480bp
+	special syst_solaire_0112_1_graph_energy.jpg
 
 \end_inset
 

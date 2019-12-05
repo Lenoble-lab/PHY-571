@@ -110,10 +110,6 @@ Romain Lenoble - Chloé Vernière
 \end_layout
 
 \begin_layout Standard
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
 
@@ -124,6 +120,13 @@ Romain Lenoble - Chloé Vernière
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -658,7 +661,7 @@ Voilà les résultats obtenus avec ce système, avec les conditions initiales
 \begin_inset Formula $v=\sqrt{G\frac{M}{R}}$
 \end_inset
 
- pour la Terre) et un rapport
+ pour la Terre), un rapport
 \begin_inset Formula $10^{4}$
 \end_inset
 
@@ -666,7 +669,7 @@ Voilà les résultats obtenus avec ce système, avec les conditions initiales
 \begin_inset Formula $10^{4}$
 \end_inset
 
-celle du satellite) :
+celle du satellite) et une distance R=1 entre les deux particules :
 \end_layout
 
 \begin_layout Standard
@@ -1351,16 +1354,16 @@ Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \begin_layout Standard
-Simulation obtenue avec les même paramètre que précédemment mais avec une
- distance de 5 du satellite au soleil.
- Le schéma d'intégration est leapfrog.
+Simulation obtenue avec les mêmes paramètres que précédemment mais avec
+ une distance de R = 5 du satellite au soleil.
+ Le schéma d'intégration est celui de Leapfrog.
 \end_layout
 
 \begin_layout Standard
-Ainsi, lors d'une simulation avec de nombreuses particules et un point centrale
+Ainsi, lors d'une simulation avec de nombreuses particules et un point central
  très massif (comme c'est le cas dans une galaxie ou pour le système solaire),
- les particules situées proches du centres seront plus sensibles au pas
- de temps.
+ les particules situées proches du centre seront plus sensibles au pas de
+ temps.
  Dans nos simulation, nous n'avons pas implémenté de pas de temps variable
  selon la valeur de la force, mais cela aurait pu être un bon prolongement.
 \end_layout
@@ -1434,9 +1437,9 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 .
  Cette vitesse assure une stabilité et évite que les particules s'effondrent
  au centre ou se libèrent du potentiel central.
- Nous nous attendons à voir les inhomogénéité de densité lié à l'initialisation
- augmenter jusqu'à former des filaments, à l'image des simulations cosmologiques
- actuelle.
+ Nous nous attendons à voir les inhomogénéités de densité liées à l'initialisati
+on augmenter jusqu'à former des filaments, à l'image des simulations cosmologiqu
+es actuelles.
  Cependant, notre simulation est très simpliste et ne prend prend en compte
  que la gravitation : pas de noyau actif de galaxies, de supernovae, d'équations
  de mécanique des fluides.
