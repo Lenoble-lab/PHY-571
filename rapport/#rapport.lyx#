@@ -213,6 +213,15 @@ rule{12cm}{0.4pt}
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -1753,7 +1762,26 @@ status open
 \begin_layout Standard
 Sur ces quelques images, on remarque que à partir d'une distribution aléatoire,
  on observe rapidement l'émergence de grandes structures filamentaires,
- à l'image des bras observé sur la majorité des galaxies.
+ à l'image des bras observés sur la majorité des galaxies.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation de collision entre galaxies
+\end_layout
+
+\begin_layout Standard
+Pour reprendre la simulation de 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+, nous avons utilisé la même initialisation que précédemment.
+ Nous avons ajouté une deuxième galaxie en orbite autour de la première
+ et nous avons observé les effets que cela produisait.
+ 
 \end_layout
 
 \begin_layout Standard

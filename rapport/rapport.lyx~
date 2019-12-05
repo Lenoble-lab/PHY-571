@@ -5,6 +5,21 @@
 \save_transient_properties true
 \origin unavailable
 \textclass article
+\begin_preamble
+\usepackage{fancyhdr}
+\usepackage{eurosym}
+
+\pagestyle{fancy}
+
+\fancyhead[L]{}
+
+\renewcommand{\footrulewidth}{0.1pt}
+
+
+\fancyfoot[L]{
+\includegraphics[scale=0.5]{logo_poly.jpg}
+}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language french
@@ -92,6 +107,26 @@ Rapport d'EA : résolution numérique du problème à N-corps
 
 \begin_layout Author
 Romain Lenoble - Chloé Vernière
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1634,7 +1669,31 @@ status open
 \begin_layout Standard
 Sur ces quelques images, on remarque que à partir d'une distribution aléatoire,
  on observe rapidement l'émergence de grandes structures filamentaires,
- à l'image des bras observé sur la majorité des galaxies.
+ à l'image des bras observés sur la majorité des galaxies.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation de collision entre galaxies
+\end_layout
+
+\begin_layout Standard
+Pour reprendre la simulation de 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sitecours"
+literal "false"
+
+\end_inset
+
+, nous avons utilisé la même initialisation que précédemment.
+ Nous avons ajouté une deuxième galaxie en orbite autour de la première
+ et nous avons observé les effets que cela produisait.
+ Nous avons obtenu de belles simulations, que l'on peut retrouver dans le
+ dossier /result du git.
+\end_layout
+
+\begin_layout Section
+Conclusion
 \end_layout
 
 \begin_layout Standard
