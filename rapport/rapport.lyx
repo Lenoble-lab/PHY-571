@@ -647,6 +647,8 @@ Nous avons uniquement fait des modélisation en 2D mais le code est très
  facilement extensible à la troisième dimension : il suffit d'ajouter une
  dernière dimension dans le choix du huitième de cube dans lequel appartient
  chaque particule au moment de la descente de l'arbre.
+ Nous avons également toujours pris la constante gravitationnelle G=1.
+ Toute les autres unités sont redéfinie par rapport à cette valeur.
 \end_layout
 
 \begin_layout Subsection
