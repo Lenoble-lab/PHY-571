@@ -1240,7 +1240,7 @@ On ne peut toutefois pas déduire de tels calcul le pas minimal qu'il faut
 \end_layout
 
 \begin_layout Paragraph
-Exemple de simulation où le pas de temps est trop grand :
+Exemple de simulation avec un pas de temps trop grand :
 \end_layout
 
 \begin_layout Standard

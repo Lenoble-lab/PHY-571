@@ -1236,7 +1236,7 @@ On ne peut toutefois pas déduire de tels calcul le pas minimal qu'il faut
  la vitesse variera beaucoup.
  Le pas de temps devra alors être assez faible pour conserver l'énergie.
  Cette situation est observée lorsque le satellite se rapproche du soleil.
- La force varie de plus énormément avec la position dans ce cas.
+ La force varie de plus considérablement avec la position dans ce cas.
 \end_layout
 
 \begin_layout Paragraph
