@@ -7,26 +7,32 @@ import matplotlib.animation as animation
 
 data = []
 
-filename = "data_3000_part_0.005_deltat_collision_1129"
+filename = "results/collision_5/collision_0112_1_2000"
+
 data = np.load(filename + ".npy", allow_pickle = True)
 
 [pos, energy_pot, energy_cin, cintetic_momentum] = data
 
 
 
-fig = plt.figure()
 
 N_cycle = len(pos)
 N_part = len(pos[0])
 
+print(N_cycle, " N_cyles")
+print(N_part, " N_part")
+
+
+
+
 
 fig = plt.figure()
-frames_size = 700
-center = [0, 0]
+
+frames_size = 800
+center = [0, 400]
 plt.axis('equal')
 plt.axes( xlim = (-frames_size + center[0] , +center[0] + frames_size), ylim = (-frames_size + center[1], center[1] + frames_size))
 line, = plt.plot([], [], 'o', markersize=1)
-
 
 
 def make_frame(i):
