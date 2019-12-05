@@ -241,11 +241,11 @@ literal "false"
 
 \end_inset
 
- permet de résoudre les N équations associées aux 
-\begin_inset Formula $N^{2}$
+ permet de résoudre les N équations du mouvement associées aux 
+\begin_inset Formula $N(N-1)$
 \end_inset
 
-interactions en 
+ interactions en un temps en 
 \begin_inset Formula $O(N\log N)$
 \end_inset
 
@@ -273,7 +273,8 @@ noprefix "false"
 
 .
  Plus les particules sont réparties de façon non homogène dans l'espace,
- plus l'arbre est donc profond.
+ plus l'arbre est donc profond, car il faut plus diviser l'espace pour isoler
+ les particules.
  L'apport de l'algorithme pour le calcul d'une force d'interaction exercée
  sur une particule est de ne considérer que le centre de masse du quadrant
  considéré si la taille de celui-ci est plus grande que la distance entre
@@ -285,11 +286,15 @@ Nous avons pris
 \begin_inset Formula $\theta=0.7$
 \end_inset
 
- conformément à la littérature.
+<<<<<<< HEADconformémant à la littérature.
+ Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ seule l'interaction avec le centre de masse du groupe de particules sera
+ calculée, au lieu de la calculer avec chacune des particules du groupe
+ : ======= conformément à la littérature.
  Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
  seule l'interaction avec le centre de masses du groupe de particules sera
  calculé, au lieu de calculer chaque force d'interaction avec les particules
- du groupe : 
+ du groupe : >>>>>>> 4eeb1e0cadb770fdd1e7efaa019abbde0db238bf
 \end_layout
 
 \begin_layout Standard
@@ -545,19 +550,19 @@ Nous avons codé l'algorithme dans le fichier /code du git.
 \end_layout
 
 \begin_layout Standard
-Au début (pendant les deux premières semaines), nous avons construit notre
+Pendant les deux premières semaines du projet, nous avons construit notre
  code autour de différentes classes : c'est ce qui nous semblait le plus
  simple au vu de la complexité de l’algorithme.
  Nous avons ainsi créé une classe pour les particules, une pour les nœuds
  de l'arbre et une pour l'arbre en entier.
- La classe particule était particulièrement lourde, elle contenait la vitesse,
- la position, la masse, l'énergie, l’accélération et la force qui s'exerçait
- sur la particule notamment.
+ La classe particule était particulièrement lourde car elle contenait la
+ vitesse, la position, la masse, l'énergie, l’accélération et la force qui
+ s'exerçait sur la particule notamment.
  Lorsque nous avons voulu optimiser le code en augmentant le nombre de particule
-, nous sommes rapidement arrivés à des problèmes liés à cette structure
- : le code était très lent et nous étions limité en mémoire.
- De plus, les outils vectoriels de Numpy n'étaient pas utilisable avec une
- telle architecture.
+s, nous sommes rapidement arrivés à des problèmes liés à cette structure
+ : le code était très lent et nous étions limités en mémoire.
+ De plus, les outils vectoriels de Numpy n'étaient pas utilisables avec
+ une telle architecture.
 \end_layout
 
 \begin_layout Standard
@@ -574,14 +579,14 @@ Pour palier à ces problèmes, nous avons réécrit le code en nous affranchissa
 \end_layout
 
 \begin_layout Standard
-Les calculs restent tout de même très gourmand en temps, même sur les ordinateur
-s des salles d'informatique qui étaient environ dix fois plus rapides que
+Les calculs restent tout de même très gourmands en temps, même sur les ordinateu
+rs des salles d'informatique qui étaient environ dix fois plus rapides que
  nos ordinateurs personnels.
  Nous avons essayé d'optimiser la rapidité du code avec du multiprocessing
  mais l'architecture du code est assez complexe et nécessite d'avoir accès
- au même information en même temps par tout les processeurs.
- La partie la plus gourmande est le calcul des interactions à chaque pas
- de temps entre toutes les particules (en 
+ à la même information en même temps par tout les processeurs.
+ La partie la plus chronophage du code est le calcul des interactions à
+ chaque pas de temps entre toutes les particules (en 
 \begin_inset Formula $O(Nlog(N))$
 \end_inset
 
@@ -609,7 +614,7 @@ Premièrement, nous avons vérifié si notre algorithme avait une bonne précisi
  Pour cela, nous avons utilisé le problème à deux corps dont la solution
  analytique est connue.
  Nous avons notamment simulé un système Terre-Soleil où l'un des deux corps
- a une masse bien supérieur à l'autre.
+ a une masse bien supérieure à l'autre.
 \end_layout
 
 \begin_layout Standard
@@ -618,15 +623,15 @@ Voilà les résultats obtenus avec ce système, avec les conditions initiales
 \begin_inset Formula $v=\sqrt{G\frac{M}{R}}$
 \end_inset
 
- pour la Terre) et un rapport 
+ pour la Terre), un rapport
 \begin_inset Formula $10^{4}$
 \end_inset
 
- entre les masses (la masse de l'objet central vaut 
+ entre les masses (la masse de l'objet central vaut
 \begin_inset Formula $10^{4}$
 \end_inset
 
-et celle du satellite) :
+celle du satellite) et une distance R=1 entre les deux particules :
 \end_layout
 
 \begin_layout Standard
@@ -724,8 +729,11 @@ Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \begin_layout Standard
-Dans cette simulation, nous avons utilisé un pas de temps de 0.002 et un
- schéma d'intégration du premier ordre (d'Euler).
+Dans cette simulation, nous avons utilisé un pas de temps de 
+\begin_inset Formula $\Delta t=$
+\end_inset
+
+0.002 et un schéma d'intégration du premier ordre (d'Euler).
  On obtient bien une trajectoire circulaire et l'énergie est bien conservée.
  On peut vérifier les valeurs obtenues par le calcul.
 \end_layout
@@ -843,16 +851,16 @@ Ainsi, l’algorithme est fiable est donne des résultats cohérents pour le
 \end_layout
 
 \begin_layout Standard
-Comme vu dans la première partie, différents schéma d'intégrations existent.
+Comme présenté dans la première partie, différents schéma d'intégrations
+ permettent d'intégrer les équations.
  Ils donnent des résultats différents selon le pas de temps choisi.
- La principale différence observée est sur la conservation (ou non ) de
- l'énergie.
+ La principale différence observée est sur la conservation de l'énergie.
 \end_layout
 
 \begin_layout Standard
 Nous allons comparer ici le schéma d'Euler du premier ordre, le schéma leapfrog
- et le schéma du deuxième ordre pour le même pas de temps dans la situation
- précédente.
+ (deuxième ordre) et le schéma de Hermite (quatrième ordre) pour le même
+ pas de temps dans la situation précédente.
  Le pas de temps vaut 0.007.
 \end_layout
 
@@ -1176,16 +1184,16 @@ Trajectoire (bleu : soleil, orange : Terre)
 
 \begin_layout Standard
 Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
- schéma du deuxième ordre, ce qui était attendu : schéma à l'ordre supérieur
- et symétrique en temps.
+ schéma du quatrième ordre, ce qui était attendu : c'est le schéma à l'ordre
+ le plus élevé et symétrique en temps.
  La trajectoire semble cependant identique.
  Pour des simulations beaucoup plus longues, nous avons remarqué que les
- deux premiers schéma conservait mal l'énergie et était très dépendant du
- pas de temps.
- Cependant, le schéma de Hermite au 2ème ordre nécessite de calculer de
+ deux premiers schémas présentaient une plus mauvaise conservation de l'énergie
+ et étaient très dépendant du pas de temps.
+ Cependant, le schéma de Hermite au 4ème ordre nécessite de calculer de
  taux de variation de l'accélération.
- Ce calcul est couteux, ce qui rend le code utilisant le schéma de Hermite
- près de 3 fois plus lent que le schéma de leapfrog.
+ Ce calcul est coûteux, ce qui rend le code utilisant le schéma de Hermite
+ près de 3 fois plus lent que le schéma de Leapfrog.
  C'est pour cela que nous avons utilisé ce dernier pour la suite de nos
  simulations.
 \end_layout
@@ -1308,14 +1316,14 @@ Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \begin_layout Standard
-Simulation obtenue avec les même paramètre que précédemment mais avec une
- distance de 5 du satellite au soleil.
- Le schéma d'intégration est leapfrog.
+Simulation obtenue avec les mêmes paramètres que précédemment mais avec
+ une distance de R = 5 du satellite au soleil.
+ Le schéma d'intégration est celui de Leapfrog.
 \end_layout
 
 \begin_layout Standard
-Ainsi, lors d'une simulation avec de nombreuses particules et un point centrale
- très massif (comme c'est le cas dans une galaxie ou pour le système solaire),
+Ainsi, lors d'une simulation avec de nombreuses particules et un point central
+  très massif (comme c'est le cas dans une galaxie ou pour le système solaire),
  les particules situées proches du centres seront plus sensibles au pas
  de temps.
  Dans nos simulation, nous n'avons pas implémenté de pas de temps variable
@@ -1390,7 +1398,7 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 
 .
  Cette vitesse assure une stabilité et évite que les particules s'effondrent
- au centre ou se libère du potentiel central.
+ au centre ou se libèrent du potentiel central.
  Nous nous attendons à voir les inhomogénéité de densité lié à l'initialisation
  augmenter jusqu'à former des filaments, à l'image des simulations cosmologiques
  actuelle.
