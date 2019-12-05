@@ -226,17 +226,17 @@ et
 \end_layout
 
 \begin_layout Standard
-Cependant, l'un des gros problèmes des simulations à N-corps est lorsque
+Cependant, un important problème des simulations à N-corps arrive lorsque
  deux objets se trouvent très proches.
- La trajectoire de chaque particule n'est pas une conique classique comme
- dans le problème à deux corps.
+ La trajectoire de chaque particule n'est alors pas une conique classique
+ comme dans le problème à deux corps.
  Lorsque la distance qu'une particule parcourt en une seule itération dépasse
  la distance entre elle-même et une autre particule, une collision s'est
  produite.
- Le problème est que ce genre d’évènement peut modifier énormément l'énergie
- cinétique totale : c'est ce phénomène qui se passe lorsque des particules
- sont éjectées très violemment et sortent du potentiel d'attraction de la
- galaxie dans les simulations.
+ Ce genre d’évènement peut alors modifier énormément l'énergie cinétique
+ totale : c'est ce phénomène qui se passe lorsque des particules sont éjectées
+ très violemment et sortent du potentiel d'attraction de la galaxie dans
+ les simulations.
  Une solution pour limiter ce problème est d’implanter une force modifiée
  à courte portée, de sorte que la force de gravitation soit réduite à courte
  distance.
@@ -323,7 +323,7 @@ noprefix "false"
 \begin_inset Formula $\theta.$
 \end_inset
 
-Nous avons pris 
+ Nous avons pris 
 \begin_inset Formula $\theta=0.7$
 \end_inset
 
@@ -508,7 +508,7 @@ r_{i}(t+\Delta t)=v_{i}(t)*\Delta t
 
 \begin_layout Standard
 Ce schéma au premier ordre est le plus simple qu'il existe, mais ses erreurs
- sont assez importante, notamment pour la conservation de l'énergie.
+ sont assez importantes, notamment pour la conservation de l'énergie.
 \end_layout
 
 \begin_layout Itemize
@@ -639,7 +639,7 @@ rs des salles d'informatique qui étaient environ dix fois plus rapides que
  selon la descente de l'arbre, comme expliqué plus haut.
  C'est ici que nous aurions voulu utiliser du multiprocessing pour que chaque
  force soit calculée en même temps mais chaque calcul nécessitait l'accès
- aux même données, ce qui ne facilitait pas cette pratique.
+ aux mêmes données, ce qui ne facilitait pas cette pratique.
 \end_layout
 
 \begin_layout Standard
@@ -1242,7 +1242,7 @@ Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
 \end_layout
 
 \begin_layout Standard
-On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
+On ne peut toutefois pas déduire de tels calcul le pas minimal qu'il faut
  adopter pour une simulation.
  En effet, le pas de temps est uniquement utilisé pour déduire l'accélération
  et la vitesse à partir de la force calculée.
@@ -1250,11 +1250,11 @@ On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
  la vitesse variera beaucoup.
  Le pas de temps devra alors être assez faible pour conserver l'énergie.
  Cette situation est observée lorsque le satellite se rapproche du soleil.
- La force varie de plus énormément avec la position dans ce cas.
+ La force varie de plus considérablement avec la position dans ce cas.
 \end_layout
 
 \begin_layout Paragraph
-Exemple de simulation où le pas de temps est trop grand :
+Exemple de simulation avec un pas de temps trop grand :
 \end_layout
 
 \begin_layout Standard
