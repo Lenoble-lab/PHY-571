@@ -993,14 +993,6 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 \end_layout
 
 \begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -1024,7 +1016,7 @@ status open
 \begin_inset Graphics
 	filename système_solaire/Capture.JPG
 	lyxscale 30
-	scale 20
+	scale 25
 
 \end_inset
 
@@ -1036,7 +1028,7 @@ status open
 
 \size small
 \emph on
-État initial
+Énergie et moment cinétique
 \end_layout
 
 \end_inset
@@ -1069,8 +1061,8 @@ status open
 \begin_inset Graphics
 	filename système_solaire/Capture_1.JPG
 	lyxscale 30
-	scale 20
-	BoundingBox 0bp 0bp 1171bp 850bp
+	scale 25
+	BoundingBox 0bp 0bp 640bp 480bp
 
 \end_inset
 
@@ -1086,7 +1078,7 @@ status open
 
 \size small
 \emph on
-État après 4000 itérations
+Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \end_inset
@@ -1095,7 +1087,6 @@ status open
 \end_layout
 
 \begin_layout Standard
-\align center
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -1119,7 +1110,7 @@ status open
 \begin_inset Graphics
 	filename système_solaire/Capture_2.JPG
 	lyxscale 30
-	scale 20
+	scale 25
 
 \end_inset
 
@@ -1131,7 +1122,7 @@ status open
 
 \size small
 \emph on
-Etat final (après 10000 itérations)
+Énergie et moment cinétique
 \end_layout
 
 \end_inset
@@ -1162,9 +1153,9 @@ status open
 
 
 \begin_inset Graphics
-	filename C:/Users/romain Lenoble/Documents/PHY575/Projet/PHY-571/results/syst_solaire_2/syst_solaire_0112_1_graph_energy.jpg
-	lyxscale 50
-	scale 30
+	filename système_solaire/Capture_1.JPG
+	lyxscale 30
+	scale 25
 	BoundingBox 0bp 0bp 640bp 480bp
 
 \end_inset
@@ -1181,7 +1172,7 @@ status open
 
 \size small
 \emph on
-Énergie et moment cinétique
+Trajectoire (bleu : soleil, orange : Terre)
 \end_layout
 
 \end_inset
