@@ -1415,6 +1415,11 @@ literal "false"
  de l'énergie potentielle n'était pas très bonne.
 \end_layout
 
+\begin_layout Standard
+Le schéma d'intégration choisi est le schéma Leapfrog qui a l'avantage d'être
+ beaucoup plus rapide que le schéma hermitien et d'être stable.
+\end_layout
+
 \begin_layout Subsubsection
 Simulation galactique
 \end_layout
@@ -1682,6 +1687,7 @@ status open
 Sur ces quelques images, on remarque que à partir d'une distribution aléatoire,
  on observe rapidement l'émergence de grandes structures filamentaires,
  à l'image des bras observés sur la majorité des galaxies.
+ L'énergie n'est pas conservée, ce qui est lié au schéma d'intégration.
 \end_layout
 
 \begin_layout Standard
@@ -1725,8 +1731,249 @@ literal "false"
  dossier /result du git.
 \end_layout
 
+\begin_layout Standard
+La simulation ci dessous correspond à ce genre de collision.
+ Il y a 4000 particules et 10000 itérations.
+ Le pas de temps vaut 0.008.
+ La masse des deux trous noir vaut 
+\begin_inset Formula $10^{6}$
+\end_inset
+
+, le reste des particules a une masse de 1.
+ Dans le référentiel des deux galaxies, chaque particule a une vitesse 
+\begin_inset Formula $v(r)=\sqrt{G\frac{M(\leq r)}{R}}$
+\end_inset
+
+ assurant la stabilité de l'ensemble.
+ Nous avons ajouté une vitesse de dérive de la petite galaxie : 
+\begin_inset Formula $v_{der}=\sqrt{G\frac{2M(\leq r)}{R}}$
+\end_inset
+
+ qui fait que la deuxième galaxie n'est pas liée à la première.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename collision_galaxies/Capture_1.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État initial
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename collision_galaxies/Capture_2.JPG
+	lyxscale 30
+	scale 20
+	BoundingBox 0bp 0bp 1171bp 850bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État après 4000 itérations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename collision_galaxies/Capture_3.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État final (après 10000 itérations)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename collision_galaxies/collision_0112_1_2000_graph_energy.jpg
+	lyxscale 50
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+	special syst_solaire_0112_1_graph_energy.jpg
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cette simulation ne conserve pas l'énergie : le pas de temps de 0.008 est
+ trop grand.
+\end_layout
+
 \begin_layout Section
 Conclusion
+\end_layout
+
+\begin_layout Standard
+Finalement, l'algorithme de Barn-Hut nous a permis de faire des simulations
+ à N-corps à plusieurs milliers de particules.
+ Cette algorithme rapide et optimisé permet de faire une infinité de simulations
+ différentes selon les conditions initiales.
+ Dans cette étude, nous avons étudié l'évolution d'un ensemble de particules,
+ simulant une galaxie et la collision entre deux galaxies.
+ Malgré sa simplicité à l'heure des super calculateur, il permet de rendre
+ compte de quelques phénomène de l'évolution cosmologique.
+\end_layout
+
+\begin_layout Standard
+Cependant, notre algorithme pourrait être amélioré en implémentant différents
+ comportements : collision et accrétion de matière pour le système solaire,
+ dynamique des fluides pour les gaz galactiques.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
