@@ -142,12 +142,13 @@ Déterminer le mouvements de N points en interaction gravitationnelle les
  Des des méthodes numériques permettent de résoudre ce problème pour un
  grand nombre de particules.
  En particulier, l'algorithme de Barnes-Hut, que nous avons implémenté,
- permet d'obtenir des approximations pour un temps de l'ordre de 
+ permet, moyennant quelques approximations quantifiables, d'obtenir une
+ complexité de 
 \begin_inset Formula $N\log(N)$
 \end_inset
 
- grâce à une structure en arbre récursive, alors qu'un algorithme naïf serait
- en 
+ grâce à une structure en arbre récursive, alors qu'un algorithme exact
+ serait en 
 \begin_inset Formula $O(N^{2})$
 \end_inset
 
@@ -164,12 +165,6 @@ Dans un premier temps, nous allons présenter la méthode générale employée
 
 \begin_layout Section
 Méthodes pour résoudre le problème à N-corps
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Chloé
 \end_layout
 
 \begin_layout Subsection
@@ -224,21 +219,22 @@ et
 \end_layout
 
 \begin_layout Standard
-Cependant, l'un des gros problèmes des simulations à N-corps est lorsque
+Cependant, un important problème des simulations à N-corps arrive lorsque
  deux objets se trouvent très proches.
- La trajectoire de chaque particule n'est pas une conique classique comme
- dans le problème à deux corps.
+ La trajectoire de chaque particule n'est alors pas une conique classique
+ comme dans le problème à deux corps.
  Lorsque la distance qu'une particule parcourt en une seule itération dépasse
  la distance entre elle-même et une autre particule, une collision s'est
  produite.
- Le problème est que ce genre d’évènement peut modifier énormément l'énergie
- cinétique totale : c'est ce phénomène qui se passe lorsque des particules
- sont éjectées très violemment et sortent du potentiel d'attraction de la
- galaxie dans les simulations.
+ Ce genre d’évènement peut alors modifier énormément l'énergie cinétique
+ totale : c'est ce phénomène qui se passe lorsque des particules sont éjectées
+ très violemment et sortent du potentiel d'attraction de la galaxie dans
+ les simulations.
  Une solution pour limiter ce problème est d’implanter une force modifiée
  à courte portée, de sorte que la force de gravitation soit réduite à courte
  distance.
- Cela peut se traduite par l'ajout d'un paramètre d'atténuation 
+ Cela peut se traduite par l'ajout d'un paramètre d'atténuation que l'on
+ a choisit 
 \begin_inset Formula $\epsilon=5$
 \end_inset
 
@@ -320,19 +316,15 @@ noprefix "false"
 \begin_inset Formula $\theta.$
 \end_inset
 
-Nous avons pris 
+ Nous avons pris 
 \begin_inset Formula $\theta=0.7$
 \end_inset
 
-<<<<<<< HEADconformémant à la littérature.
- Ainsi, si une particule est suffisament éloignée d'un groupe de particules,
+ conformément à la littérature.
+ Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
  seule l'interaction avec le centre de masse du groupe de particules sera
  calculée, au lieu de la calculer avec chacune des particules du groupe
- : ======= conformément à la littérature.
- Ainsi, si une particule est suffisamment éloignée d'un groupe de particules,
- seule l'interaction avec le centre de masses du groupe de particules sera
- calculé, au lieu de calculer chaque force d'interaction avec les particules
- du groupe : >>>>>>> 4eeb1e0cadb770fdd1e7efaa019abbde0db238bf
+ :
 \end_layout
 
 \begin_layout Standard
@@ -509,7 +501,7 @@ r_{i}(t+\Delta t)=v_{i}(t)*\Delta t
 
 \begin_layout Standard
 Ce schéma au premier ordre est le plus simple qu'il existe, mais ses erreurs
- sont assez importante, notamment pour la conservation de l'énergie.
+ sont assez importantes, notamment pour la conservation de l'énergie.
 \end_layout
 
 \begin_layout Itemize
@@ -571,7 +563,7 @@ Cet intégrateur est le plus précis que nous ayons utilisé.
  Ces équations sont symétriques en temps et donnent une excellente conservation
  de l'énergie.
  Il nécessite cependant de passer par un schéma implicite qui nécessite
- de calculer la dérivée de la force ce qui a un cout de calcul non négligeable.
+ de calculer la dérivée de la force, ce qui a un cout de calcul non négligeable.
 \end_layout
 
 \begin_layout Standard
@@ -633,7 +625,7 @@ rs des salles d'informatique qui étaient environ dix fois plus rapides que
  selon la descente de l'arbre, comme expliqué plus haut.
  C'est ici que nous aurions voulu utiliser du multiprocessing pour que chaque
  force soit calculée en même temps mais chaque calcul nécessitait l'accès
- aux même données, ce qui ne facilitait pas cette pratique.
+ aux mêmes données, ce qui ne facilitait pas cette pratique.
 \end_layout
 
 \begin_layout Standard
@@ -1236,7 +1228,7 @@ Ainsi, on remarque une bien meilleure conservation de l'énergie pour le
 \end_layout
 
 \begin_layout Standard
-On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
+On ne peut toutefois pas déduire de tels calcul le pas minimal qu'il faut
  adopter pour une simulation.
  En effet, le pas de temps est uniquement utilisé pour déduire l'accélération
  et la vitesse à partir de la force calculée.
@@ -1248,7 +1240,7 @@ On ne peut cependant pas déduire de tels calcul le pas minimal qu'il faut
 \end_layout
 
 \begin_layout Paragraph
-Exemple de simulation où le pas de temps est trop petit :
+Exemple de simulation où le pas de temps est trop grand :
 \end_layout
 
 \begin_layout Standard
@@ -1381,7 +1373,7 @@ Simulations obtenues :
 
 \begin_layout Standard
 A l'aide des ordinateurs des salles informatiques, nous avons pu faire des
- calculs avec un grand nombre de particules (plusieurs milliers).
+ calculs avec un grand nombre de particules (jusqu'à plusieurs milliers).
  Ces calculs mettaient plusieurs heures à tourner.
  Nous avions comme objectif d'obtenir des simulations similaires à 
 \begin_inset CommandInset citation
@@ -1445,15 +1437,15 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
 on augmenter jusqu'à former des filaments, à l'image des simulations cosmologiqu
 es actuelles.
  Cependant, notre simulation est très simpliste et ne prend prend en compte
- que la gravitation : pas de noyau actif de galaxies, de supernovae, d'équations
- de mécanique des fluides.
+ que la gravitation : pas de noyau actif de galaxies, de supernovae ou d'équatio
+ns de mécanique des fluides.
  Ces phénomènes modifient énormément la morphologie des galaxies.
  Pour toutes ces raisons, notre modèle n'est pas très réaliste.
 \end_layout
 
 \begin_layout Standard
-Enfin, notre modèle ne représente pas du tout un proto-système solaire car
- nous n'avons pas mis en place de processus d’accrétion entre les particules.
+Enfin, notre modèle ne représente pas non plus tout un proto-système solaire
+ car nous n'avons pas mis en place de processus d’accrétion entre les particules.
  Il ne prend pas en compte les collisions entre corps.
  Cette approximation est justifiée pour la modélisation d'une galaxie où
  les collisions entre étoiles sont très rares car les distances sont très
@@ -1738,7 +1730,8 @@ La simulation ci dessous correspond à ce genre de collision.
 \begin_inset Formula $v_{der}=\sqrt{G\frac{2M(\leq r)}{R}}$
 \end_inset
 
- qui fait que la deuxième galaxie n'est pas liée à la première.
+ , supérieure à la vitesse de libération, ce qui fait que la deuxième galaxie
+ n'est pas liée à la première.
 \end_layout
 
 \begin_layout Standard
