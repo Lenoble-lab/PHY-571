@@ -189,7 +189,7 @@ et
 Cependant, pour éviter d'avoir des forces divergentes lorsque deux particules
  sont trop proches l'une de l'autre, nous avons introduit un paramètre d'atténua
 tion 
-\begin_inset Formula $\epsilon=5 $
+\begin_inset Formula $\epsilon=5$
 \end_inset
 
 USI.
@@ -417,7 +417,29 @@ r_{i}(t+\Delta t)=r_{i}(t)+v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}
 \end_layout
 
 \begin_layout Itemize
-Enfin la méthode de Hermite au second ordre : 
+Enfin un schéma de Hermite au quatrième ordre : 
+\begin_inset Formula 
+\[
+v_{i}(t+\Delta t)=a_{i}(t)*\Delta t+\frac{1}{2}\dot{a_{i}}(t)*\Delta t^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{i}(t+\Delta t)=v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}+\frac{1}{6}\dot{a_{i}}(t)*\Delta t^{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pour la stabilité de chacun des schémas, nous avons opté pour un pas de
+ temps constant.
+ 
 \end_layout
 
 \begin_layout Section

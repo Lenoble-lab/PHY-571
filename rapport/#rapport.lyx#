@@ -417,7 +417,7 @@ r_{i}(t+\Delta t)=r_{i}(t)+v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}
 \end_layout
 
 \begin_layout Itemize
-Enfin la méthode de Hermite au second ordre : 
+Enfin un schéma de Hermite au quatrième ordre : 
 \begin_inset Formula 
 \[
 v_{i}(t+\Delta t)=a_{i}(t)*\Delta t+\frac{1}{2}\dot{a_{i}}(t)*\Delta t^{2}
@@ -434,6 +434,10 @@ r_{i}(t+\Delta t)=v_{i}(t)*\Delta t+\frac{1}{2}a_{i}(t)*\Delta t^{2}+\frac{1}{6}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Pour la stabilité de chacun des schémas 
 \end_layout
 
 \begin_layout Section
