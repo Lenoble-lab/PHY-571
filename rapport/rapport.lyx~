@@ -136,6 +136,7 @@ Chloé
 
 \begin_layout Subsection
 Équation
+<<<<<<< HEAD
 \end_layout
 
 \begin_layout Standard
@@ -205,6 +206,8 @@ m_{i}*\ddot{r_{i}}=-G*m_{i}\sum\frac{m_{j}}{|\vec{r_{j}-}\vec{r_{i}|{}^{2}+\epsi
 \end_inset
 
 
+=======
+>>>>>>> 57e359e0897723fe82ac4b86facaffd381a62785
 \end_layout
 
 \begin_layout Subsection
@@ -367,12 +370,6 @@ Time intégration
 
 \begin_layout Section
 Simulations réalisées
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Romain
 \end_layout
 
 \begin_layout Standard
@@ -1208,10 +1205,216 @@ Pour commencer, nous avons pris une distribution de masse proportionnelle
  Cette vitesse assure une stabilité et évite que les particules s'effondrent
  au centre ou se libère du potentiel central.
  Nous nous attendons à voir les inhomogénéité de densité lié à l'initialisation
+<<<<<<< HEAD
  augmenter jusqu'à former des filaments.
 \end_layout
 
 \begin_layout Standard
+=======
+ augmenter jusqu'à former des filaments, à l'image des simulations cosmologiques
+ actuelle.
+ Cependant, notre simulation est très simpliste et ne prend prend en compte
+ que la gravitation : pas de noyau actif de galaxies, de supernovae, d'équations
+ de mécanique des fluides.
+ Ces phénomènes modifient énormément la morphologie des galaxies.
+ Pour toutes ces raisons, notre modèle n'est pas très réaliste.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename système_solaire/Capture.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État initial
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename système_solaire/Capture_1.JPG
+	lyxscale 30
+	scale 20
+	BoundingBox 0bp 0bp 1171bp 850bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+État après 4000 itérations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename système_solaire/Capture_2.JPG
+	lyxscale 30
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Etat final (après 10000 itérations)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\begin_inset Graphics
+	filename C:/Users/romain Lenoble/Documents/PHY575/Projet/PHY-571/results/syst_solaire_2/syst_solaire_0112_1_graph_energy.jpg
+	lyxscale 50
+	scale 30
+	BoundingBox 0bp 0bp 640bp 480bp
+
+\end_inset
+
+
+\begin_inset space \hspace*{\fill}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\emph on
+Énergie et moment cinétique
+\end_layout
+
+\end_inset
+
+>>>>>>> 57e359e0897723fe82ac4b86facaffd381a62785
 
 \end_layout
 
