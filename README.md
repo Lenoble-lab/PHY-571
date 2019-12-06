@@ -1,28 +1,18 @@
-# PHY-571
+## PHY-571
 
-# Architecture
-class Particule 
-- position, masse, force, velocity
+Le git est organisé en plusieurs dossiers : 
 
+# Code
+Ce dossier contient l'algorithme de Barn-Hut. Le dossier old version contient l'ancien code de l'algorithme (avec les classes) qui était très lent. 
+Les dossier en array_code contiennent la nouvelle version. 
+Le dossier array_node_second_order est un schéma à l'odre 2.
+Le fichier Init.py correspond au différentes initialisation que nous avons faites.
 
-class Node 
-- particule, nb_children, box_size, id, [NW, NE, SW, SE]
-- init
-- create_tree (simul)
-- calculate_centers, calculate_masses
+# Rapport
+Il contient le rapport en pdf.
 
+# Results
+Contient les différents film que nous avons obtenus avec leurs description.
 
-class simulation 
-- delta_t, nb_point, size, G, particules[], root
-- init
-- init_gaussian (et plus selon affinites)
-- set_tree ("met root a jour")
-- calculate_force(calcule force, potentiel)
-- calculate_accel
-- update_velocity
-- update_position
-
-main : conditions initiales et fait avancer le pas de temps
-
-class exploitation
-???
+# Analyse
+Contient 2 scipts pour analyser et créer les vidéos à partir des calculs obtenus dans les salles infos.

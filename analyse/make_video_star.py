@@ -2,12 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
+"""
+prgm pour convertir un fichier .npy sous la forme enregristrée en vidéo avec uniquement la position des particules
+"""
 
 
 data = []
 
-filename = "data_3000_part_0.005_deltat_collision_1129"
+filename = "0312_collision_1st_order"
 data = np.load(filename + ".npy", allow_pickle = True)
 
 [pos, energy_pot, energy_cin, cintetic_momentum] = data
@@ -37,7 +39,7 @@ def make_frame(i):
 
     return (line)
 
-ani = animation.FuncAnimation(fig, make_frame, frames=len(pos), interval=30, repeat = False)
+ani = animation.FuncAnimation(fig, make_frame, frames=30, interval=30, repeat = False)
 #plt.show()
 ani.save(filename + "_star.mp4")
 

@@ -3,13 +3,14 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 """
-prgm pour convertir un fichier .npy sous la forme enregristrée en vidéo avec la position des particules et l'énergie correspondante
+prgm pour convertir un fichier .npy sous la forme enregristrée en vidéo avec la position des particules
+et l'énergie correspondante
 """
 
 
 data = []
 
-filename = "data_3000_part_0.005_deltat_collision_1129"
+filename = "results/collision_5/collision_0112_1_2000"
 data = np.load(filename + ".npy", allow_pickle = True)
 
 [pos, energy_pot, energy_cin, cintetic_momentum] = data
@@ -23,11 +24,11 @@ N_part = len(pos[0])
 
 
 fig = plt.figure()
-frames_size = 600
-center = []
+frames_size = 800
+center = [0, 400]
 ax1 = fig.add_subplot(1,2,1)
-ax1.set_xlim(-frames_size, frames_size)
-ax1.set_ylim(-frames_size, frames_size)
+ax1.set_xlim(-frames_size + center[0] , +center[0] + frames_size)
+ax1.set_ylim(-frames_size + center[1], center[1] + frames_size)
 line, = ax1.plot([], [], 'o', markersize=1)
 
 ax2 = fig.add_subplot(1,2,2)

@@ -31,7 +31,8 @@ def init_syst_soleil(N_part):
 
     masses = np.zeros(N_part)
     velocities = np.zeros((N_part, 2))
-
+    positions = np.zeros((N_part, 2))
+    
     positions[0] = P_soleil
     masses[0] = M_soleil
     velocities[0] = V_soleil
