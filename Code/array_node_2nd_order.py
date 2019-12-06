@@ -7,6 +7,14 @@ import matplotlib.animation as animation
 from numba import jit
 from Init import *
 
+
+"""
+nouvelle implémentation de l'algorithme, de façon otimisé en limitant le nombre de classe
+et en utilisant au maximun les numpy array
+Cette implémentation est pour le schéma au deuxième ordre
+"""
+
+
 def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     """
     Calculate the interaction/energy between target_node and temp_node.
@@ -17,8 +25,8 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     vect_r = temp_node.COM - target_node.COM    # vector between nodes' centres of mass, for force calculation
     r = np.sqrt(np.sum(vect_r**2))   # distance between them
     
-    vect_v = -temp_node.velocity + target_node.velocity
-    v = np.sqrt(np.sum(vect_v**2))
+    vect_v = -temp_node.velocity + target_node.velocity #in order to calcul the jerk
+    v = np.sqrt(np.sum(vect_v**2)) 
 
     prod_scal = np.sum([vect_v[i] * vect_r[i] for i in range (len(vect_r))])
 
@@ -115,7 +123,7 @@ def GravAccel(positions, masses, velocities, thetamax=0.7, G=1.):
         calculate_force(topnode, leaf, thetamax, G)  # update energy and force of every particules
         force[leaf.id] = leaf.force  # store force and accéleration in order to update the velocity and the position later
         energy[leaf.id] = leaf.energy
-        der_force[leaf.id] = leaf.der_force
+        der_force[leaf.id] = leaf.der_force #update the jerk
     
     return force, energy, der_force
  
@@ -134,7 +142,10 @@ def step_2nd_order(positions, masses, velocities, delta_t):
     return positions, velocities, np.sum(energy)
 
 
-
+"""
+the algorithm is now finished.
+The rest of the code is for illustration only and calcul
+"""
 
 
 sys.setrecursionlimit(10**5) 

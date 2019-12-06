@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -9,8 +8,15 @@ import scipy.special
 import scipy.integrate
 import matplotlib.pyplot as plt
 
+"""
+contains every different initialisation that we have use
+"""
+
 
 def init_carre_random(N_part, R):
+    """
+    dispose de façon aléatoire des points dans un carré
+    """
     positions = np.zeros((N_part, 2))
     masses = np.ones(N_part) 
     velocities = np.zeros((N_part, 2))
@@ -21,6 +27,10 @@ def init_carre_random(N_part, R):
     return positions, masses, velocities
 
 def init_syst_2_corps():
+    """
+    initiate the 2 corps system with trajectories
+    """
+
     M_1 = 100
     M_2 = 100
     R = 5.
@@ -41,6 +51,9 @@ def init_syst_2_corps():
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
 def init_terr_soleil():
+    """
+    initiate the 2 corps system with circular trajectories and one corps heavier than the second
+    """
     M_soleil = 10**4
     M_terre = 1
     R = 5.
@@ -54,6 +67,11 @@ def init_terr_soleil():
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
 def init_syst_soleil(N_part, R_max = 50.):
+    """
+    distribution in 1/R around a massive corps with a speed to ensure stability
+    we use this for the simulation of galaxies
+    """
+
     M_soleil = 10**6
     P_soleil = np.array([0.,0.])
     V_soleil = np.array([0.,0.])
@@ -133,7 +151,10 @@ def init_galaxy(N_part, R_max = 100):
 
 
 def init_collision_galaxies(N_part, R_max = 300):
-
+    """
+    initialisation for a collision between galaxies
+    the smaler galaxy contains 1/3 of the total points and is in rotation around the other galaxie
+    """
     pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, R_max)
 
     pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, R_max/3)
@@ -149,14 +170,6 @@ def init_collision_galaxies(N_part, R_max = 300):
     
     return np.concatenate((pos_1, pos_2), axis = 0), np.concatenate((masses_1, masses_2), axis = 0), np.concatenate((vel_1, vel_2), axis = 0)
 
-
-# positions, masses, velocities = init_carre_random(4000, 400)
-
-"""
-plt.figure()
-plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
-plt.show()
-"""
 
 def init_milkyWay(N_part) :
 

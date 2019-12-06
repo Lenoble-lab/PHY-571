@@ -7,6 +7,13 @@ import matplotlib.animation as animation
 from numba import jit
 from Init import *
 
+"""
+nouvelle implémentation de l'algorithme, de façon otimisé en limitant le nombre de classe
+et en utilisant au maximun les numpy array
+Tout les schéma sont au premier ordre
+"""
+
+
 def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     """
     Calculate the interaction/energy between target_node and temp_node.
@@ -49,13 +56,12 @@ class Node:
  
         if N_points == 1:
             # if there is one point, then the node is a real particule
-            leaves.append(self)
+            leaves.append(self)  #leaves contains all the real particule
             self.COM = positions[0]
             self.mass = masses[0]
             self.id = ids[0]
             self.force = np.zeros(2)        # at each point, we initailise the gravitational field
             self.energy = 0                  #and the enrgy potential
-            self.der_force = 0          #for second order integration shema
         else:
             self.GenerateChildren(positions, masses, ids, leaves)     # if we have at least 2 points in the node, we generate the children
                                                              
@@ -71,31 +77,23 @@ class Node:
  
     def GenerateChildren(self, positions, masses, ids, leaves):
         """Generates the node's children"""
-        tree_pos = (positions > self.center)  #does all comparisons needed to determine points' octants
+        tree_pos = (positions > self.center)  #does all comparisons needed to determine the position of the point
         
-        for i in range(2): #looping over the 8 octants
+        for i in range(2): #choosing the right quarter of the plan
             for j in range(2):
 
                 in_tree = np.all(tree_pos == np.bool_([i,j]), axis=1)
                 if not np.any(in_tree): continue           # if no particles, don't make a node
                 dx = 0.5*self.size*(np.array([i,j])-0.5)   # offset between parent and child box centers
-                self.children.append(Node(self.center+dx,
-                                                self.size/2,
-                                                masses[in_tree],
-                                                positions[in_tree],
-                                                ids[in_tree],
-                                                leaves))
+                self.children.append(Node(self.center+dx, self.size/2, masses[in_tree], positions[in_tree], ids[in_tree], leaves))
 
 @jit
 def GravAccel(positions, masses, sec_order = False, thetamax=0.7, G=1.):
     center = (np.max(positions,axis=0)+np.min(positions,axis=0))/2       #center of bounding box is the mean of the max and min particule
     topsize = np.max(np.max(positions,axis=0)-np.min(positions,axis=0))  #size of bounding box
-    leaves = []  # want to keep track of leaf nodes
+    leaves = []  # to store the real particule to compute the interactions 
     topnode = Node(center, topsize, masses, positions, np.arange(len(masses)), leaves) #build the tree
     
-    """
-    if sec_order : der_force = np.empty_like(positions)
-    """
     force = np.empty_like(positions)
     energy = np.empty_like(positions)
     
@@ -104,9 +102,7 @@ def GravAccel(positions, masses, sec_order = False, thetamax=0.7, G=1.):
         calculate_force(topnode, leaf, thetamax, G)  # update energy and force of every particules
         force[leaf.id] = leaf.force  # store force and accéleration in order to update the velocity and the position later
         energy[leaf.id] = leaf.energy
-        if sec_order : der_force[leaf.id] = leaf.der_force
     
-    if sec_order : return force, energy, der_force
     return force, energy
     
 
@@ -132,6 +128,13 @@ def step_leap_frog(positions, masses, velocities, force_i, delta_t):
     velocities += 0.5*(force_i + force) * delta_t 
     positions += velocities * delta_t + 0.5*force_i * delta_t**2
     return positions, velocities, force, np.sum(energy)
+
+
+
+"""
+the algorithm is now finished.
+The rest of the code is for illustration only and calcul
+"""
 
 
 sys.setrecursionlimit(10**5) 
@@ -176,13 +179,6 @@ ax2.legend()
 
 nt = 200
 
-"""
-t = time.clock()
-for i in range (40):
-    positions, velocities = step(positions, masses, velocities, 0.005)
-
-print(time.clock()-t)
-"""
 force, energy = GravAccel(positions, masses)
 
 def make_frame(i):

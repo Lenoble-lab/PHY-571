@@ -7,7 +7,11 @@ import matplotlib.animation as animation
 from numba import jit
 from numba import autojit, prange
 
-t = time.clock()
+"""
+exemple de calcul que nous lancions sur les ordinateurs des salles info
+"""
+
+
 def init_syst_soleil(N_part):
     M_soleil = 10**3
     R_max = 50.  
@@ -210,5 +214,4 @@ for i in range (N_cycle):
     cintetic_momentum[i] =  np.sum(masses * [positions[i][0] * velocities[i][1] - positions[i][1] * velocities[i][0] for i in range (len(positions))])
     
 
-print(time.clock() - t, ' time')
-#np.save("../analyse/data", np.array([pos, energy_pot, energy_cin, cintetic_momentum]))
+np.save("../analyse/data", np.array([pos, energy_pot, energy_cin, cintetic_momentum]))

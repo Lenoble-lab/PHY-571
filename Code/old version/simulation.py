@@ -27,12 +27,6 @@ class Simulation :
         self.set_tree()                 #create the tree with the current state of the particules
         self.update_force_velocity_position()         #update the velocity and position of each particule
 
-    def step_multiprocessing(self):
-        self.nb_point = len(self.particules)
-        self.set_tree()                 #create the tree with the current state of the particules
-        self.calculate_force_mutliprocessing()          #calcul the interaction on each particule
-        self.update_velocity()          #update the velocity of each particule
-        self.update_position()    
 
     def step_second_order(self):
         self.nb_point = len(self.particules)
@@ -89,11 +83,6 @@ class Simulation :
                     if temp_node.children[i] != None :
                         self.calculate_force_target(target_particule, temp_node.children[i])
                         
-    
-    def calculate_force_mutliprocessing(self): #using mutliprocessing
-        pool = multiprocessing.Pool(4)
-        pool.map(functools.partial(self.calculate_force_target, temp_node=self.root), self.particules,)
-        pool.close()
 
     def update_velocity (self) :
         for i in range(self.nb_point):
