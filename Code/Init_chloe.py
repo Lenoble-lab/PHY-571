@@ -9,6 +9,8 @@ import time
 import scipy.special
 import scipy.integrate
 
+# N'A PAS ENCORE ABOUTI
+
 
 def init_terr_soleil():
     M_soleil = 10**4
