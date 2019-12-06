@@ -11,7 +11,8 @@ from Init import *
 """
 nouvelle implémentation de l'algorithme, de façon otimisé en limitant le nombre de classe
 et en utilisant au maximun les numpy array
-Cette implémentation est pour le schéma au deuxième ordre
+Cette implémentation est pour le schéma au deuxième ordre car elle nécéssite de calculer la dérivée de l'accélération, ce qui
+nécessite de rajouter des opérations couteuse en temps de calcul
 """
 
 
@@ -34,6 +35,7 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
         #checking that the calculate force is valid (no division by 0)
         # if the node only has one particle or theta is small enough,
         #  add the field contribution to value stored in node.force
+        #the jerf is called der_force as it is the derivative of the force
         if (len(temp_node.children)==0) or (temp_node.size/r < thetamax):
             target_node.force += G * temp_node.mass * vect_r/r /(r**2 + eps**2)
             target_node.energy += -G * temp_node.mass * target_node.mass /(r + eps)
@@ -49,8 +51,7 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
 
 
 class Node:
-    def __init__(self, center, size, masses, positions, velocities, ids, leaves=[]):
-    
+    def __init__(self, center, size, masses, positions, velocities, ids, leaves=[]):   
         """
         take as parameter the list (np.array) of masses, positions and ids of the particules
         center, size for the box

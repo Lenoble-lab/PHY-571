@@ -8,7 +8,7 @@ from numba import jit
 from Init import *
 
 """
-nouvelle implémentation de l'algorithme, de façon otimisé en limitant le nombre de classe
+nouvelle implémentation de l'algorithme, de façon otimisée en limitant le nombre de classes
 et en utilisant au maximun les numpy array
 Tout les schéma sont au premier ordre
 """
@@ -41,8 +41,7 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
 
 
 class Node:
-    def __init__(self, center, size, masses, positions, ids, leaves=[]):
-    
+    def __init__(self, center, size, masses, positions, ids, leaves=[]):    
         """
         take as parameter the list (np.array) of masses, positions and ids of the particules
         center, size for the box
@@ -111,38 +110,47 @@ def step_1st_order(positions, masses, velocities, delta_t):
     """
     put it together : update the tree, calculate the force/energy and finaly update position/velocity with a first order shema
     """
-    force, energy = GravAccel(positions, masses)
-    N_points = len(positions)
+    force, energy = GravAccel(positions, masses) #calculate force and energy
 
+    #updating speed and positions : 
     velocities += delta_t * force
     positions += delta_t * velocities
+    
+    #return position, speed for the next iteration
+    #energy is only to store it and analyse later
     return positions, velocities, np.sum(energy)
 
-def step_leap_frog(positions, masses, velocities, force_i, delta_t):
+def step_leap_frog(positions, masses, velocities, force_i, delta_t): 
     """
     put it together : update the tree, calculate the force/energy and finaly update position/velocity with a leapfrog shema
+    we need to store the force from on step earlier as it is part of the leapfrog method
+    force_i correspond to this value
     """
+   
     
     force, energy = GravAccel(positions, masses)
-    N_points = len(positions)
+    #calculate force and energy
+
+    #updating speed and positions : 
     velocities += 0.5*(force_i + force) * delta_t 
     positions += velocities * delta_t + 0.5*force_i * delta_t**2
+     #return position, speed for the next iteration
+    #energy is only to store it and analyse later
+    #force is stored for the next integration
     return positions, velocities, force, np.sum(energy)
 
 
 
 """
 the algorithm is now finished.
-The rest of the code is for illustration only and calcul
+The rest of the code is for illustration only and study
 """
 
-
+#as the tree is very deep, we need extend the recursion limit
 sys.setrecursionlimit(10**5) 
 
-t = time.clock()
 
-
-
+#draw the animation
 fig = plt.figure()
 
 positions, masses, velocities = init_terr_soleil()
@@ -188,7 +196,9 @@ def make_frame(i):
     global velocities
     global force
     
-    positions, velocities, force, energy_pot_t = step(positions, masses, velocities, force, 0.005)
+
+    #choosing the scheme
+    positions, velocities, force, energy_pot_t = step_leap_frog(positions, masses, velocities, force, 0.005)
     # postitions, velocities, energy_pot_t = step_1st_order(positions, masses, velocities, 0.005)
 
     pos [i+1] = positions
@@ -212,12 +222,18 @@ def make_frame(i):
 
     return (line,  line_ene_tot, line_ene_cin, line_ene_pot, line_mom)
 
+
+
 #ani = animation.FuncAnimation(fig, make_frame, frames=N_cycle, interval=30, repeat = False)
 #ani.save("1000_part_0.005_deltat_0.005_gaussian.mp4")
-print(time.clock() - t, 'temps')
 #plt.show()
 
+
+
 def calcul(N_cycle):
+    """
+    calcul fait N_cycle itérations et les enregistre ensuite
+    """
     global positions
     global velocities
     global force
@@ -232,9 +248,7 @@ def calcul(N_cycle):
         energy_pot[i] = energy_pot_t/2
         energy_cin[i] = 0.5 * np.sum(masses * [np.sum(velocities[i,:]**2) for i in range (len(velocities))])
         cintetic_momentum[i] =  - np.sum(masses * [positions[i][0] * velocities[i][1] - positions[i][1] * velocities[i][0] for i in range (len(positions))])
-t = time.clock()
-calcul(N_cycle)
-print(time.clock()-t)
+
 
 name = "trace_terre_soleil_0.007_leapfrog"
 
