@@ -1,0 +1,13 @@
+2000 particules
+init_syst_solaire mais avec une vitesse pour les particule v = \sqrt(G * M_soleil/R)
+cette vitesse ne prend pas en compte la densité non nulle qui fait que la masse vue par la 
+particule evolue
+
+8h calcul
+10 000 itérations
+pas de temps = 0;005
+soleil = masse 10**3
+
+On remarque que certaine particule sont éjectées : c'est l'effet d'une densité trop importante
+et d'un pas de temps trop court qui crée des problèmes qui ne peuvent être supprimés par la 
+force softening

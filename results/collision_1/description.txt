@@ -1,0 +1,8 @@
+collision avec collision galaxy
+N_point = 3000
+time = 0.005
+N_cycle = 10000
+10**6 pour les deux BH
+
+pb : vitesse du satellite trop importante (oubli dans le prgm de mettre à jour la distance), 
+	Le pas de temps est trop court (mauvaise conservation de l'énergie)

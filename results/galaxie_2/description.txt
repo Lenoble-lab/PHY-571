@@ -1,0 +1,10 @@
+syst_solaire
+4000 part
+rayon 400
+5000 cycles
+0.005 pas de temps
+bonne cons énergie (mais aussi court laps de temps)
+nouvel essai avec : 
+	temps = 0.008 (en avoir plus)
+	10 000 cycles
+	mise en place de la limite à proximité du trou noir

@@ -1,0 +1,11 @@
+collision avec collision galaxy
+N_point = 3000
+time = 0.005
+N_cycle = 10000
+10**6 pour les deux BH
+
+problème conservation énergie : 
+	pas de temps trop court
+	densité trop importante ce qui crée des particules qui volent dans tous les sens
+
+Pour les nouvels essais : doubler le rayon de la galaxie pour diminuer la densité

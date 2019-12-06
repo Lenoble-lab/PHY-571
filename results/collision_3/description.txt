@@ -1,0 +1,6 @@
+collision : 4000 part
+0.008 time
+version modifiée de la vitesse pour la rotation galactique
+10 000 itérations
+rayon galaxie = 300
+Choix de la vitesse de la deuxième galaxie

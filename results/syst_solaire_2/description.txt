@@ -1,0 +1,6 @@
+Galaxie
+4000 points
+400 rayon
+0.008 pas de temps
+10000 cycles
+M_BH**3
