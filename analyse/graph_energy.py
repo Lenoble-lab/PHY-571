@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
+"""
+prgm pour convertir un fichier .npy et obetnir le graphe de l'énergie/moment cinétique en fonction du temps
+"""
 
 
 data = []

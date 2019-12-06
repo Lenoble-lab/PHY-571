@@ -2,10 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+"""
+prgm pour convertir un fichier .npy sous la forme enregristrée en vidéo avec la position des particules et l'énergie correspondante
+"""
 
 
-
-#data = np.load("../results/data.npy")
 data = []
 
 filename = "data_3000_part_0.005_deltat_collision_1129"
