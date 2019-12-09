@@ -18,10 +18,10 @@ def calculate_force(temp_node, target_node, eps = 5, thetamax=0.7, G=1.0):
     """
     Calculate the interaction/energy between target_node and temp_node.
     Then : update the values in target_node.
-    To compute everty interaction for a current node, initialise with temp_node = summit of the tree
+    To compute everty interactions for a current node, initialise with temp_node = root of the tree
     """
 
-    vect_r = temp_node.COM - target_node.COM    # vector between nodes' centres of mass, for force calculation
+    vect_r = temp_node.COM - target_node.COM    # vector between target_node and center of mass to calculate the force
     r = np.sqrt(np.sum(vect_r**2))   # distance between them
     
     if r>0:
@@ -122,9 +122,13 @@ def step_1st_order(positions, masses, velocities, delta_t):
 
 def step_leap_frog(positions, masses, velocities, force_i, delta_t): 
     """
+<<<<<<< HEAD
     put it together : update the tree, calculate the force/energy and finaly update position/velocity with a leapfrog shema
     we need to store the force from on step earlier as it is part of the leapfrog method
     force_i correspond to this value
+=======
+    put it together : update the tree, calculate the force/energy and finaly update position/velocity with a leapfrog shema (2nd order)
+>>>>>>> array_archi
     """
    
     
@@ -153,6 +157,7 @@ sys.setrecursionlimit(10**5)
 #draw the animation
 fig = plt.figure()
 
+#initialisation
 positions, masses, velocities = init_terr_soleil()
 N_cycle = 1500
 N_part = len(positions)
@@ -164,6 +169,7 @@ cintetic_momentum = np.zeros(N_cycle)
 
 pos[0] = positions
 
+#creation of the figure
 fig = plt.figure()
 frames_size = 400
 ax1 = fig.add_subplot(1,2,1)

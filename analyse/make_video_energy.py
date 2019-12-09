@@ -10,7 +10,11 @@ et l'énergie correspondante
 
 data = []
 
+<<<<<<< HEAD
 filename = "results/collision_5/collision_0112_1_2000"
+=======
+filename = "0612_collision_1st_order"
+>>>>>>> array_archi
 data = np.load(filename + ".npy", allow_pickle = True)
 
 [pos, energy_pot, energy_cin, cintetic_momentum] = data
@@ -24,8 +28,13 @@ N_part = len(pos[0])
 
 
 fig = plt.figure()
+<<<<<<< HEAD
 frames_size = 800
 center = [0, 400]
+=======
+frames_size = 1000
+center = [0, 200]
+>>>>>>> array_archi
 ax1 = fig.add_subplot(1,2,1)
 ax1.set_xlim(-frames_size + center[0] , +center[0] + frames_size)
 ax1.set_ylim(-frames_size + center[1], center[1] + frames_size)

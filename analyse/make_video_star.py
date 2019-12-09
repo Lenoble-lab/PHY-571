@@ -9,26 +9,36 @@ prgm pour convertir un fichier .npy sous la forme enregristrée en vidéo avec u
 
 data = []
 
+<<<<<<< HEAD
 filename = "0312_collision_1st_order"
+=======
+filename = "0612_collision_1st_order"
+
+>>>>>>> array_archi
 data = np.load(filename + ".npy", allow_pickle = True)
 
 [pos, energy_pot, energy_cin, cintetic_momentum] = data
 
 
 
-fig = plt.figure()
 
 N_cycle = len(pos)
 N_part = len(pos[0])
 
+print(N_cycle, " N_cyles")
+print(N_part, " N_part")
+
+
+
+
 
 fig = plt.figure()
-frames_size = 700
-center = [0, 0]
+
+frames_size = 1000
+center = [0, 200]
 plt.axis('equal')
 plt.axes( xlim = (-frames_size + center[0] , +center[0] + frames_size), ylim = (-frames_size + center[1], center[1] + frames_size))
 line, = plt.plot([], [], 'o', markersize=1)
-
 
 
 def make_frame(i):
