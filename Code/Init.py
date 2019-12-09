@@ -10,67 +10,66 @@ import scipy.integrate
 import matplotlib.pyplot as plt
 
 
-def init_carre_random(N_part, R):
-    positions = np.zeros((N_part, 2))
-    masses = np.ones(N_part) 
-    velocities = np.zeros((N_part, 2))
+def init_carre_random(N_part, R):   #random initialisation of N_part particules in a square
+    positions = np.zeros((N_part, 2))           #array for the positions
+    masses = np.ones(N_part)                    #array for the masses
+    velocities = np.zeros((N_part, 2))          #array for the velocities
 
     for i in range (N_part):
         positions[i] = np.array([R/2 * rnd.random() - R/2, R/2 * rnd.random() - R/2])
 
     return positions, masses, velocities
 
-def init_syst_2_corps():
-    M_1 = 100
-    M_2 = 100
-    R = 5.
+def init_syst_2_corps():            #initialisation of a two-particules system
+    M_1 = 100                 #mass of the 1st particule
+    M_2 = 100                  #mass of the 2nd particule
+    R = 5.                    #initial distance between the particules
     
 
 
     #T = np.sqrt(a**3 * 4*np.pi**2 / (M_soleil + M_terre))
 
-    P_1 = np.array([M_2/M_1 * R/(1 + M_2/M_1),0.])
-    P_2 = np.array([M_1/M_2 * R/(1 + M_1/M_2), R])
+    P_1 = np.array([M_2/M_1 * R/(1 + M_2/M_1),0.])  #position of the 1st particule
+    P_2 = np.array([M_1/M_2 * R/(1 + M_1/M_2), R])  #position of the 2nd particle
 
     # T_1 = 
 
-    V_soleil = np.array([2*np.pi*R/T,0.])
-    V_terre =np.array([-2*np.pi*R/T, 0.])
+    V_soleil = np.array([2*np.pi*R/T,0.])           #velocity of the 1st particule (Sun)
+    V_terre =np.array([-2*np.pi*R/T, 0.])           #velocity of the 2nd particule (Earth)
  
 
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
-
-def init_terr_soleil():
-    M_soleil = 10**4
-    M_terre = 1
-    R = 5.
+def init_terr_soleil():                 #initialisation of an Earth-Sun system
+    M_soleil = 10**4  #mass of the Sun
+    M_terre = 1         #mass of the Earth
+    R = 5.             #radius between them
     
-    P_soleil = np.array([0.,0.])
+    P_soleil = np.array([0.,0.])       #initial positions
     P_terre = np.array([0., R])
 
-    V_soleil = np.array([0.,0.])
+    V_soleil = np.array([0.,0.])             #initial velocities
     V_terre =np.array([np.sqrt(M_soleil/R), 0.])
     
     return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
 
-def init_syst_soleil(N_part, R_max = 50.):
-    M_soleil = 10**6
-    P_soleil = np.array([0.,0.])
-    V_soleil = np.array([0.,0.])
+def init_syst_soleil(N_part, R_max = 50.):         #initialisation of a solar system with N_part particules
+    M_soleil = 10**6                    #mass of the Sun
+    P_soleil = np.array([0.,0.])        #position of the Sun
+    V_soleil = np.array([0.,0.])        #velocity of the Sun
 
 
 
-    positions = np.zeros((N_part, 2))
-    masses = np.ones(N_part) 
-    velocities = np.zeros((N_part, 2))
+    positions = np.zeros((N_part, 2))       #positions
+    masses = np.ones(N_part)                #and masses
+    velocities = np.zeros((N_part, 2))      #and velocities of the particules
 
-    positions[0] = P_soleil
+    positions[0] = P_soleil         #initialisation 
     masses[0] = M_soleil
     velocities[0] = V_soleil
     
     
     i = 1
-    while i < N_part : 
+    while i < N_part :      #creation of N-part-1 random particules
 
         theta = rnd.random() * 2 * np.pi
         r = rnd.random() * R_max
@@ -89,15 +88,15 @@ def init_galaxy(N_part, R_max = 100):
     we use a simplified density, with an exponenitial decrease
     """
 
-    M_BH = 10**3
-    M_tot = 10**6
-    M_disk = M_tot - M_BH
-    R_max = 100.
+    M_BH = 10**3              #mass of the black hole
+    M_tot = 10**6             #total mass
+    M_disk = M_tot - M_BH     #mass of the disk
+    R_max = 100.              #maximal radius
     h = 1
     gamma = 10 #core radius
     r_c = 10**3 #cut of radius
-    P_BH = np.array([0.,0.])
-    V_BH = np.array([0.,0.])
+    P_BH = np.array([0.,0.])    #position of the black hole
+    V_BH = np.array([0.,0.])    #velocity of the black hole
 
 
 
@@ -117,7 +116,7 @@ def init_galaxy(N_part, R_max = 100):
     
     
     i = 1
-    while i < N_part : 
+    while i < N_part :      #creation of N_part-1 random particules
 
         theta = rnd.random() * 2 * np.pi
         r = -h * np.log(R_max * rnd.random()/M_tot)             #distance to the center of the galaxy
@@ -132,11 +131,11 @@ def init_galaxy(N_part, R_max = 100):
     return positions, masses, velocities
 
 
-def init_collision_galaxies(N_part, R_max = 300):
+def init_collision_galaxies(N_part, R_max = 300):       #initialisation of two galaxies of N_part particules together
 
-    pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, R_max)
+    pos_1, masses_1, vel_1 = init_syst_soleil( 8* N_part//9, R_max)         #initialisation of the 1st galaxy
 
-    pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, R_max/3)
+    pos_2, masses_2, vel_2 = init_syst_soleil(N_part//9, R_max/3)           #initialisation of the 2nd galaxy
 
     pos_2 = pos_2 + np.ones_like(pos_2) * R_max 
 
@@ -158,82 +157,5 @@ plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
 plt.show()
 """
 
-def init_milkyWay(N_part) :
-
-    G = 1
-    h = 1
-    Md = 1
-    zo = 0.2
-    Mh = 5.8
-    gamma = 1
-    rc = 0.1
-    Mb = 1.0/3
-    a = 0.2
-    c = 0.1
-    Q = 1.5
-    Ro = 8.5/3.5
-    alpha = (1-np.sqrt(np.pi)*gamma*np.exp((gamma/rc)**2)/rc*(1-scipy.special.erf(gamma/rc)))**(-1)
-    
-    v_disk = 10  
-    v_halos = 0.1
-    v_bord = 50
-    
-    positions = np.zeros((N_part,2))
-    masses = np.zeros(N_part)
-    velocities = np.zeros((N_part, 2))
-
-    for i in range(N_part//3) :
-        #initialisation for the disk
-        theta = rnd.random() * 2 * np.pi        
-        r = np.abs(rnd.normal(0, h))
-        positions [i] = np.array([r*np.cos(theta), r*np.sin(theta)])
-        
-        masses [i] = r*Md*np.exp(-r/h)/(4*np.pi*h**2)
-        
-        
-
-        v = np.abs(rnd.normal(0,v_disk))
-        velocities[i] = v *np.array([-np.sin(theta), np.cos(theta)])
 
 
-        # initialisation for the dark holes
-        theta = rnd.random() * 2 * np.pi        
-        r = np.abs(rnd.normal(0, h))
-        positions [N_part//3+i] = np.array([r*np.cos(theta), r*np.sin(theta)])
-        masses[i+N_part//3] = r*Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))
-
-        """
-        vr_h = G*(Mh*alpha/np.pi)**2/rc*scipy.integrate.quad(lambda x : np.exp(-(x/rc)**2)/(x**2+gamma**2)*scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc), r,np.inf)
-        v = 2*vr_h*np.scipy.special.erfinv(vr_h**4*0.5*np.random())
-        """
-
-        v = np.abs(rnd.normal(0, v_halos))
-        velocities[i+N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
-        
-        
-        #initialisation for the bulges
-        theta = rnd.random() * 2 * np.pi         
-        x,y = np.abs(rnd.normal(0, a)), np.abs(rnd.normal(0, a))
-        m = (x**2+y**2)/a**2
-        positions[2*N_part//3+i] = np.array([x, y])
-        masses[i+2*N_part//3] = np.sqrt(x**2+y**2)*Mb/(2*np.pi*a*m*(m+1))
-
-        """
-        v_rhd = (1/(Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))+Md*np.exp(-r/h)/(4*np.pi*h**2)))*scipy.integrate.quad(lambda x: (Mh*alpha*np.exp(-x**2/rc**2)/(2*np.pi**(3/2)*rc*(x**2+gamma**2))+Md*np.exp(-x/h)/(4*np.pi*h**2))*G*(Md+scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc))/x**2,r, np.inf) 
-        v_rb = Mb/(2*np.pi*a*m*(m+1))*np.scipy.integrate.quad(lambda x : Mb/(2*np.pi*a*(x/a)**2*((x/a)**2+1))*G*Mb*(x/a)**4/(1+(x/a)**2)**2, r, np.inf)
-        vr_b= np.sqrt(v_rhd+v_rb)
-        v = 2*np.sqrt(2/np.pi)*np.scipy.special.erfinv(vr_b**4*0.5*np.random())/(vr_b**2)
-        """
-        v = np.abs(rnd.normal(0, v_bord))
-        velocities[i+2*N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
-
-    return positions, masses, velocities
-
-"""
-positions, masses, velocities = init_milkyWay(5000)
-
-import matplotlib.pyplot as plt
-plt.figure()
-plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
-plt.show()
-"""

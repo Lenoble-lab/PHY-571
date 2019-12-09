@@ -9,7 +9,7 @@ class Particule :
         self.velocity = velocity    ## velocity of the particule
         self.id = id            ## number of the particule (-1 if the paticule doesnt really exist)
         self.potential = 0        #For calculation of total energy
-        self.der_force = 0         #for second order integration shema
+        self.der_force = 0         #for 4th order integration schema
 
     def print_particule(self):
         print("particule")
@@ -22,8 +22,7 @@ class Particule :
 
 class Node :
 
-    def __init__ (self, box_size, box_center, particules): #créé l'arbre donné pour la liste "particules" de particules
-
+    def __init__ (self, box_size, box_center, particules): #creates the tree for the array particules
         self.nb_children = 0          ## nb of children
         self.box_size = box_size                ## size of the box if leaf
         self.children = np.empty(4, dtype = Node)               ## array of the children (nodes)
