@@ -8,126 +8,145 @@ import sys
 import time
 import scipy.special
 import scipy.integrate
+import random as rd
 
 
-def init_terr_soleil():
-    M_soleil = 10**4
-    M_terre = 1
-    R = 10.
-    
-    P_soleil = np.array([0.,0.])
-    P_terre = np.array([0., R])
+#fonction à intégrer dans la masse du halos
+def f(x,q) :
+    return x*np.exp(-x**2)/(x**2+q**2)
 
-    V_soleil = np.array([0.,0.])
-    V_terre =np.array([np.sqrt(M_soleil/R), 0.])
-    
-    return np.array([P_soleil, P_terre]), np.array([M_soleil, M_terre]), np.array([V_soleil, V_terre])
+#intégration de f 
+def primitive_f (r,rc,q) :
+    return scipy.integrate.quad(f,0, r/rc,args=(q,))[0]
 
-def init_syst_soleil(N_part):
-    M_soleil = 10**1
-    R_max = 2.  
-    P_soleil = np.array([0.,0.])
-    V_soleil = np.array([0.,0.])
+#masse totale
+def M(r, Mh,Md,Mb,alpha,rc,q,a,h): 
+    return Md/2+0.5*np.exp(-r/h)*Md*(r/h-1)+Mh*alpha*primitive_f(r,rc,q)/(np.sqrt(np.pi)*rc)+Mb*r*(r/a+2)/(2*a*(1+r/a)**2)
 
-    masses = np.zeros(N_part)
-    velocities = np.zeros((N_part, 2))
+#densité du halos
+def rho_h(r,Mh,alpha,rc,gamma):
+    return Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(1.5)*rc*(r**2+gamma**2))
 
-    positions[0] = P_soleil
-    masses[0] = M_soleil
-    velocities[0] = V_soleil
-    
-    
-    i = 1
-    while i < N_part : 
+#densité du bulbe
+def rho_b(r,Mb,a):
+    return Mb/(2*np.pi*r*(1+r/a)**3)
 
-        theta = rnd.random() * 2 * np.pi
-        # r = rnd.random() * R_max
-        r = np.abs(rnd.normal(0,10))
-        if r!=0 : 
-            positions[i] = np.array([r*np.cos(theta), r*np.sin(theta)])
-            masses[i] = 1
-            velocities[i] = np.sqrt(M_soleil/np.abs(r)) *np.array([-np.sin(theta), np.cos(theta)])
-            i += 1
-  
-    return positions, masses, velocities
+#densité du disque
+def rho_d(r,Md,h):
+    return Md*np.exp(-r/h)/(4*np.pi*h**2)
+
+#fonction à intégrer pour trouver vrh
+def int_h(r,Mh,Md,Mb,alpha,rc,q,a,h,gamma):
+    return rho_h(r,Mh,alpha,rc,gamma)*M(r, Mh,Md,Mb,alpha,rc,q,a,h)/r**2
+
+#carré de la vitesse moyenne du halos
+def vr_h(r,Mh,Md,Mb,alpha,rc,q,a,h,gamma,G):
+    return G*scipy.integrate.quad(int_h,r,np.inf,args=(Mh,Md,Mb,alpha,rc,q,a,h,gamma,))[0]/rho_h(r,Mh,alpha,rc,gamma)
+
+#fonction à intégrer pour trouver vr_b
+def int_b(r,Mh,Md,Mb,alpha,rc,q,a,h,gamma):
+    return rho_b(r,Mb,a)*M(r,Mh,Md,Mb,alpha,rc,q,a,h)/r**2
+
+#carré de la vitesse moyenne du bulbe
+def vr_b(r,Mh,Md,Mb,alpha,rc,q,a,h,gamma,G):
+    return G*scipy.integrate.quad(int_b,r,np.inf,args=(Mh,Md,Mb,alpha,rc,q,a,h,gamma,))[0]/rho_b(r,Mb,a)
+
+#carré de la vitesse du disque 
+def vr_d(r,h,Q):
+    return Q*np.exp(-r/h)
+
+#densité de la vitesse
+def vitesse(v,vr) :
+    return np.sqrt(2/np.pi)*v**2*np.exp(-v**2/(2*vr**2))/vr**3
 
 
 def init_milkyWay(N_part) :
-
+    #constantes du problème telles que dans l'article
     G = 1
     h = 1
     Md = 1
-    zo = 0.2
     Mh = 5.8
     gamma = 1
     rc = 0.1
     Mb = 1.0/3
     a = 0.2
-    c = 0.1
     Q = 1.5
-    Ro = 8.5/3.5
     alpha = (1-np.sqrt(np.pi)*gamma*np.exp((gamma/rc)**2)/rc*(1-scipy.special.erf(gamma/rc)))**(-1)
+    q = gamma/rc
     
-    v_disk = 10  
-    v_halos = 0.1
-    v_bord = 50
-    
+    #initialisation des tableaux
     positions = np.zeros((N_part,2))
     masses = np.zeros(N_part)
     velocities = np.zeros((N_part, 2))
 
     for i in range(N_part//3) :
         #initialisation for the disk
-        theta = rnd.random() * 2 * np.pi        
-        r = np.abs(rnd.normal(0, h))
+        borne_sup = Md/(4*np.pi*h**2)
+        X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        while Y >= rho_d(X,Md,h) : 
+            X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        r = X
+        theta = rnd.random() * 2 * np.pi 
         positions [i] = np.array([r*np.cos(theta), r*np.sin(theta)])
         
-        masses [i] = r*Md*np.exp(-r/h)/(4*np.pi*h**2)
+        masses [i] = 3*Md/N_part        
         
+        v_d = np.sqrt(vr_d(r,h,Q))
+        borne_sup = np.sqrt(2/np.pi)*2*np.exp(-1)/v_d
+        X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        while Y >= vitesse(X,v_d): 
+            X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        v = X
+        velocities[i] = v*np.array([-np.sin(theta), np.cos(theta)])
+
+        # initialisation for the halos
+        #position aléatoire selon la densité rho_h grâce à la méthode du rejet
+        borne_sup = Mh*alpha/(2*np.pi**1.5*rc)
+        X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        while Y >= rho_h(X,Mh,alpha,rc,gamma): 
+            X,Y = (rd.random())*100000, (rd.random())*borne_sup
         
+        theta = rnd.random() * 2 * np.pi 
+        r = X 
+        positions [i + N_part//3] = np.array([r*np.cos(theta), r*np.sin(theta)])
 
-        v = np.abs(rnd.normal(0,v_disk))
-        velocities[i] = v *np.array([-np.sin(theta), np.cos(theta)])
+        masses[i+N_part//3] = 3*Mh/N_part
 
-
-        # initialisation for the dark holes
-        theta = rnd.random() * 2 * np.pi        
-        r = np.abs(rnd.normal(0, h))
-        positions [N_part//3+i] = np.array([r*np.cos(theta), r*np.sin(theta)])
-        masses[i+N_part//3] = r*Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))
-
-        """
-        vr_h = G*(Mh*alpha/np.pi)**2/rc*scipy.integrate.quad(lambda x : np.exp(-(x/rc)**2)/(x**2+gamma**2)*scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc), r,np.inf)
-        v = 2*vr_h*np.scipy.special.erfinv(vr_h**4*0.5*np.random())
-        """
-
-        v = np.abs(rnd.normal(0, v_halos))
-        velocities[i+N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
-        
+        v_h = np.sqrt(vr_h(r,Mh,Md,Mb,alpha,rc,q,a,h,gamma,G))
+        borne_sup = np.sqrt(2/np.pi)*2*np.exp(-1)/v_h
+        X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        while Y >= vitesse(X,v_h) : 
+            X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        v = X
+        velocities[i] = v*np.array([-np.sin(theta), np.cos(theta)])      
         
         #initialisation for the bulges
-        theta = rnd.random() * 2 * np.pi         
-        x,y = np.abs(rnd.normal(0, a)), np.abs(rnd.normal(0, a))
-        m = (x**2+y**2)/a**2
-        positions[2*N_part//3+i] = np.array([x, y])
-        masses[i+2*N_part//3] = np.sqrt(x**2+y**2)*Mb/(2*np.pi*a*m*(m+1))
+        borne_sup = Mb/(2*np.pi)
+        X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        while Y >= rho_b(X,Mb,a) : 
+            X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        
+        theta = rnd.random() * 2 * np.pi 
+        r = X 
+        positions [i + N_part//3] = np.array([r*np.cos(theta), r*np.sin(theta)])
 
-        """
-        v_rhd = (1/(Mh*alpha*np.exp(-r**2/rc**2)/(2*np.pi**(3/2)*rc*(r**2+gamma**2))+Md*np.exp(-r/h)/(4*np.pi*h**2)))*scipy.integrate.quad(lambda x: (Mh*alpha*np.exp(-x**2/rc**2)/(2*np.pi**(3/2)*rc*(x**2+gamma**2))+Md*np.exp(-x/h)/(4*np.pi*h**2))*G*(Md+scipy.integrate.quad(lambda y : y**2*np.exp(-y**2)/(y**2+(gamma/rc)**2), 0, x/rc))/x**2,r, np.inf) 
-        v_rb = Mb/(2*np.pi*a*m*(m+1))*np.scipy.integrate.quad(lambda x : Mb/(2*np.pi*a*(x/a)**2*((x/a)**2+1))*G*Mb*(x/a)**4/(1+(x/a)**2)**2, r, np.inf)
-        vr_b= np.sqrt(v_rhd+v_rb)
-        v = 2*np.sqrt(2/np.pi)*np.scipy.special.erfinv(vr_b**4*0.5*np.random())/(vr_b**2)
-        """
-        v = np.abs(rnd.normal(0, v_bord))
-        velocities[i+2*N_part//3] = v*np.array([-np.sin(theta), np.cos(theta)])
+        masses[i+2*N_part//3] = 3*Mb/N_part
+        
+        v_b = np.sqrt(vr_b(r,Mh,Md,Mb,alpha,rc,q,a,h,gamma,G))
+        borne_sup = np.sqrt(2/np.pi)*2*np.exp(-1)/v_b
+        X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        while Y >= vitesse(X,v_b) : 
+            X,Y = (rd.random())*100000, (rd.random())*borne_sup
+        v = X
+        velocities[i] = v*np.array([-np.sin(theta), np.cos(theta)]) 
 
     return positions, masses, velocities
 
-"""
-positions, masses, velocities = init_milkyWay(5000)
 
-import matplotlib.pyplot as plt
+positions, masses, velocities = init_milkyWay(300)
+
+
 plt.figure()
 plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
 plt.show()
-"""
+
