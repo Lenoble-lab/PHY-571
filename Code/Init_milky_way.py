@@ -142,11 +142,13 @@ def init_milkyWay(N_part) :
 
     return positions, masses, velocities
 
+N_point = 3
+positions, masses, velocities = init_milkyWay(N_point)
 
-positions, masses, velocities = init_milkyWay(300)
 
+filename = "milky_way_" + str(N_point)
 
-plt.figure()
-plt.plot(positions[:,0], positions[:,1], 'o', markersize = 1)
-plt.show()
+np.savez(filename , positions, masses, velocities)
 
+data = []
+data = np.load(filename + ".npy", allow_pickle = True)
