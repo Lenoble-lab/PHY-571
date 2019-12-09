@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 #data = np.load("../results/data.npy")
 data = []
 
-filename = "data_3000_part_0.005_deltat_collision_1129"
+filename = "0612_collision_1st_order"
 data = np.load(filename + ".npy", allow_pickle = True)
 
 [pos, energy_pot, energy_cin, cintetic_momentum] = data
@@ -22,11 +22,11 @@ N_part = len(pos[0])
 
 
 fig = plt.figure()
-frames_size = 600
-center = []
+frames_size = 1000
+center = [0, 200]
 ax1 = fig.add_subplot(1,2,1)
-ax1.set_xlim(-frames_size, frames_size)
-ax1.set_ylim(-frames_size, frames_size)
+ax1.set_xlim(-frames_size + center[0] , +center[0] + frames_size)
+ax1.set_ylim(-frames_size + center[1], center[1] + frames_size)
 line, = ax1.plot([], [], 'o', markersize=1)
 
 ax2 = fig.add_subplot(1,2,2)

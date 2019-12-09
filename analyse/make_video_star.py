@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 
 data = []
 
-filename = "results/collision_5/collision_0112_1_2000"
+filename = "0612_collision_1st_order"
 
 data = np.load(filename + ".npy", allow_pickle = True)
 
@@ -28,8 +28,8 @@ print(N_part, " N_part")
 
 fig = plt.figure()
 
-frames_size = 800
-center = [0, 400]
+frames_size = 1000
+center = [0, 200]
 plt.axis('equal')
 plt.axes( xlim = (-frames_size + center[0] , +center[0] + frames_size), ylim = (-frames_size + center[1], center[1] + frames_size))
 line, = plt.plot([], [], 'o', markersize=1)
